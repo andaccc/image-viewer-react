@@ -1,6 +1,10 @@
 # image-viewer-react
 
 Original from https://github.com/andaccc/image-viewer-electron
+<<<<<<< HEAD
+=======
+
+>>>>>>> 568be7ecf79ae7b5822b76a693caa4fdd4833e3c
 now try to port as a pure web version 
 
 Grey Scale/ histogram logic referenced from :
