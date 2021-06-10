@@ -5,12 +5,7 @@ import ReactDOM from 'react-dom'
 
 import './../style.css';
 
-import { attachDrag } from './../tools/dragHandler'
-
-// TODO: just import 
-import * as d3 from "d3"; 
-
-const { ipcRenderer } = require('electron')
+import { attachDrag } from './../utils/dragHandler'
 
 
 //https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
@@ -207,13 +202,15 @@ export default class ImageViewer extends React.Component {
 
     document.ondragover = function(e) {
       // need this for drop file to work
+      e.stopPropagation()
       e.preventDefault() 
     };
     
     // attach drag drop
     this.dropRef.current.addEventListener('drop', (events) => {
-
-      this.handleDropImage(events);
+      events.preventDefault() 
+      
+      this.handleDropImage(events)
 
       // no need to send to backend
       //ipcRenderer.send('ondropfile', events.dataTransfer.files);
@@ -237,9 +234,12 @@ export default class ImageViewer extends React.Component {
       
       var imgId = isImg? e.target.id : null
       
-      ipcRenderer.send('show-context-menu', [e.target.tagName, imgId])
+      console.log('text')
+      // TODO: replace context menu
+      // ipcRenderer.send('show-context-menu', [e.target.tagName, imgId])
     })
 
+    /*
     ipcRenderer.on('context-menu-command', (e, command) => {
       if (command[0] === 'greyscale') {
         that.greyScaleImage(command[1])
@@ -248,6 +248,7 @@ export default class ImageViewer extends React.Component {
         that.triggerValueAnalyzer(command[1])
       }
     })
+    */
   }
 
   render() {
