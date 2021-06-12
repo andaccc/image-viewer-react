@@ -1,7 +1,8 @@
 import React from "react";
-import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import ReactDOM from 'react-dom'
+import { makeStyles } from '@material-ui/core/styles';
+
 
 import './../style.css';
 
@@ -61,13 +62,11 @@ export default class ImageViewer extends React.Component {
     this.greyScaleImage = this.greyScaleImage.bind(this)
     this.triggerValueAnalyzer = this.triggerValueAnalyzer.bind(this)
 
-
-    this.dropRef = React.createRef()
     this.viewRef = React.createRef()
     this.analyzerRef = React.createRef()
     this.histRef = React.createRef()
   }
-
+  
   handleDropImage = (e) => {
     let reader = new FileReader()
     console.log(e.dataTransfer)
@@ -207,7 +206,7 @@ export default class ImageViewer extends React.Component {
     };
     
     // attach drag drop
-    this.dropRef.current.addEventListener('drop', (events) => {
+    this.viewRef.current.addEventListener('drop', (events) => {
       events.preventDefault() 
       
       this.handleDropImage(events)
@@ -249,15 +248,23 @@ export default class ImageViewer extends React.Component {
   }
 
   render() {
+    //const viewStyle = makeStyles((theme) => ({
+    const viewStyle = {
+      marginTop: 0,
+      display: 'flex',
+      height: '100vh',
+      flexDirection: 'column',
+      alignItems: 'center',
+    }
+  
+
     return (
-      <Container ref={this.dropRef} id="main" >
-        <div ref={this.viewRef}>
-        </div>
+      <div ref={this.viewRef} style={viewStyle} id="viewer_main">
         <canvas ref={this.analyzerRef} id="analyzer_canvas">
         </canvas>
         <canvas ref={this.histRef} id="hist_canvas">
         </canvas>
-      </Container>
+      </div>
     );
   }
 }

@@ -2,8 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider  } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import Main from './components/main'
 
-import ImageViewer from "./components/ImageViewer"
 
 const darkTheme = createMuiTheme({
   palette: {
@@ -18,7 +18,7 @@ export default function App() {
       <CssBaseline />
       <Router>
         <Switch>
-          <Route path="/" component={ImageViewer} />
+          <Route path="/" component={Main} />
         </Switch>
       </Router>
     </ThemeProvider>
