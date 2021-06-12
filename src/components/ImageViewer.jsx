@@ -212,8 +212,6 @@ export default class ImageViewer extends React.Component {
       
       this.handleDropImage(events)
 
-      // no need to send to backend
-      //ipcRenderer.send('ondropfile', events.dataTransfer.files);
     });
 
     // attach mousewheel
@@ -225,8 +223,7 @@ export default class ImageViewer extends React.Component {
     */
 
     // context menu
-    // separate it ?
-    // https://www.electronjs.org/docs/api/menu
+    // TODO: separate class
     window.addEventListener('contextmenu', (e) => {
       e.preventDefault();
 
