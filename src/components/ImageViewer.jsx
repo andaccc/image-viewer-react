@@ -3,7 +3,6 @@ import Box from '@material-ui/core/Box';
 import ReactDOM from 'react-dom'
 import { makeStyles } from '@material-ui/core/styles';
 
-
 import './../style.css';
 
 import { attachDrag } from './../utils/dragHandler'
@@ -205,6 +204,20 @@ export default class ImageViewer extends React.Component {
       e.preventDefault() 
     };
     
+    // context menu
+    // TODO: separate class
+    /*
+    this.viewRef.current.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+
+      var isImg = (e.target.tagName == 'IMG')
+      
+      var imgId = isImg? e.target.id : null
+      
+      console.log('test')    
+    })
+    */
+
     // attach drag drop
     this.viewRef.current.addEventListener('drop', (events) => {
       events.preventDefault() 
@@ -220,20 +233,6 @@ export default class ImageViewer extends React.Component {
       this.handleZoom(evt);
     })
     */
-
-    // context menu
-    // TODO: separate class
-    window.addEventListener('contextmenu', (e) => {
-      e.preventDefault();
-
-      var isImg = (e.target.tagName == 'IMG')
-      
-      var imgId = isImg? e.target.id : null
-      
-      console.log('text')
-      // TODO: replace context menu
-      // ipcRenderer.send('show-context-menu', [e.target.tagName, imgId])
-    })
 
     /*
     ipcRenderer.on('context-menu-command', (e, command) => {
@@ -257,9 +256,15 @@ export default class ImageViewer extends React.Component {
       alignItems: 'center',
     }
   
+    const textStyle = {
+      fontSize: '30px',
+      color: '#7B7B7B'
+    }
+
 
     return (
       <div ref={this.viewRef} style={viewStyle} id="viewer_main">
+        <p style={textStyle}>Drop image here</p>
         <canvas ref={this.analyzerRef} id="analyzer_canvas">
         </canvas>
         <canvas ref={this.histRef} id="hist_canvas">

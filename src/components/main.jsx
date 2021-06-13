@@ -1,5 +1,6 @@
 import Container from '@material-ui/core/Container';
 import ImageViewer from "./ImageViewer"
+import ContextMenu from './contextMenu'
 import React from "react";
 
 // main container
@@ -14,6 +15,7 @@ export default class Main extends React.Component {
     return (
       <Container id="main">
         <ImageViewer />
+        <ContextMenu />
       </Container>
     )
   }
