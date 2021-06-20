@@ -2,8 +2,6 @@
  * Custom context menu 
  * - image option
  * 
- * ref:
- * https://www.pluralsight.com/guides/how-to-create-a-right-click-menu-using-react
  */
 
 /**
@@ -13,12 +11,13 @@
 import React, {useState, useEffect} from "react"
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-import { makeStyles } from "@material-ui/core/styles"
+import { grayScaleFilter, grayScaleFilterCss} from './../utils/imageFilter'
 
 export default function ContextMenu() {
   const [showMenu, setShowMenu] = useState(false)
   const [xpos, setXpos] = useState(0)
   const [ypos, setYpos] = useState(0)
+  const [targetElement, setTargetElement] = useState({} as HTMLElement)
 
   useEffect(() => {
     // TODO: separate normal and image context menu
@@ -29,11 +28,18 @@ export default function ContextMenu() {
     }
   })
 
+  const isImageElement = (ele: HTMLElement) => {
+    return ele.tagName === 'IMG'
+  }
+
   const handleContextMenu = (evt: any) => {
+    // store target element and details 
+    
     evt.preventDefault() 
     setShowMenu(true)
     setXpos(evt.pageX)
     setYpos(evt.pageY)
+    setTargetElement(evt.target)
   }
 
   const handleClick = (evt: any) => {
@@ -42,6 +48,15 @@ export default function ContextMenu() {
       setShowMenu(false)
     }
   }
+
+  const handClickGreyScale = (evt: any) => {
+    if (isImageElement(targetElement)) {
+      grayScaleFilterCss(targetElement)
+    }
+
+    handleClose()
+  }
+
 
   const handleClose = () => {
     setShowMenu(false)
@@ -61,7 +76,7 @@ export default function ContextMenu() {
           : undefined
       }
     >
-      <MenuItem onClick={handleClick}>GreyScale</MenuItem>
+      <MenuItem onClick={handClickGreyScale}>GreyScale</MenuItem>
       <MenuItem onClick={handleClick}>ValueAnalyzer</MenuItem>
       <MenuItem onClick={handleClick}>ResetSize</MenuItem>
     </Menu>

@@ -1,10 +1,8 @@
 import React from "react";
-import Box from '@material-ui/core/Box';
-import ReactDOM from 'react-dom'
-import { makeStyles } from '@material-ui/core/styles';
 
 import './../style.css';
 
+import { grayScaleFilter } from './../utils/imageFilter'
 import { attachDrag } from './../utils/dragHandler'
 
 
@@ -33,22 +31,6 @@ const defaultProps = {
 const WIDTH_LIMIT = 500; 
 const HEIGHT_LIMIT = 500;
 
-// https://phg1024.github.io/image/processing/2014/02/26/ImageProcJS4.html
-function grayscaleFilter(imgData) {
-    // each 4 places [0][1][2][3] = [r][g][b][a]
-    var arr_r = imgData.filter( (data, index) => ((index + 4) % 4) === 0)
-    var arr_g = imgData.filter( (data, index) => ((index + 3) % 4) === 0)
-    var arr_b = imgData.filter( (data, index) => ((index + 2) % 4) === 0)
-    var arr_a = imgData.filter( (data, index) => ((index + 1) % 4) === 0)
-
-  // single brightness channel
-  var l = arr_r.map( (data, index) => {
-    Math.round(arr_r[index] * 0.299 + arr_g[index] * 0.587 + arr_b[index] * 0.114)
-  })
-
-    return l
-}
-
 export default class ImageViewer extends React.Component {
   constructor(props) {
     super(props);
@@ -58,7 +40,6 @@ export default class ImageViewer extends React.Component {
 
     this.handleDropImage = this.handleDropImage.bind(this)
     this.handleZoom = this.handleZoom.bind(this)
-    this.greyScaleImage = this.greyScaleImage.bind(this)
     this.triggerValueAnalyzer = this.triggerValueAnalyzer.bind(this)
 
     this.viewRef = React.createRef()
@@ -114,27 +95,6 @@ export default class ImageViewer extends React.Component {
   }
 
   /**
-   * grey scale image
-   * for now just use css
-   * - seem css method value becomes darker...
-   * 
-   * TODO: use this
-   * https://phg1024.github.io/image/processing/2014/02/26/ImageProcJS4.html
-   * @param {*} imgId 
-   */
-  greyScaleImage = (imgId) => {
-    // by css
-    var img = document.getElementById(imgId);
-    if (img.classList.contains("img-greyscale")) {
-      img.classList.remove("img-greyscale")
-    }
-    else {
-      img.classList.add("img-greyscale")
-    }
-  
-  }
-
-  /**
    * Trigger the value analyzer  
    *  1. Histogram
    *  2. Simplify value image
@@ -162,7 +122,7 @@ export default class ImageViewer extends React.Component {
 
     var imgData = ctx.getImageData(0, 0, tmp.width, tmp.height).data;
 
-    var grayData = grayscaleFilter(imgData)
+    var grayData = grayScaleFilter(imgData)
     
     // TODO: draw hist
     // https://www.d3-graph-gallery.com/graph/histogram_basic.html
@@ -203,20 +163,6 @@ export default class ImageViewer extends React.Component {
       e.stopPropagation()
       e.preventDefault() 
     };
-    
-    // context menu
-    // TODO: separate class
-    /*
-    this.viewRef.current.addEventListener('contextmenu', (e) => {
-      e.preventDefault();
-
-      var isImg = (e.target.tagName == 'IMG')
-      
-      var imgId = isImg? e.target.id : null
-      
-      console.log('test')    
-    })
-    */
 
     // attach drag drop
     this.viewRef.current.addEventListener('drop', (events) => {
@@ -224,30 +170,10 @@ export default class ImageViewer extends React.Component {
       
       this.handleDropImage(events)
 
-    });
-
-    // attach mousewheel
-    // resize whole region
-    /*
-    this.dropRef.current.addEventListener('wheel', (evt) => {
-      this.handleZoom(evt);
     })
-    */
-
-    /*
-    ipcRenderer.on('context-menu-command', (e, command) => {
-      if (command[0] === 'greyscale') {
-        that.greyScaleImage(command[1])
-      }
-      else if (command[0] === 'value_analyzer') {
-        that.triggerValueAnalyzer(command[1])
-      }
-    })
-    */
   }
 
   render() {
-    //const viewStyle = makeStyles((theme) => ({
     const viewStyle = {
       marginTop: 0,
       display: 'flex',

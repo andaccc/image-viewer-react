@@ -22,7 +22,7 @@ grey scale strategy
 
 pan -> all image move
 
-context menu protocol
+watermark
 
 port to chrome extension?
 
