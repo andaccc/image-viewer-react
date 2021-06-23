@@ -67,6 +67,8 @@ export default class ImageViewer extends React.Component {
           this.viewRef.current.appendChild(img)
 
           img.onload = function() {
+            if (img.classList.contains('img-initted ')) return;
+            
             // limit image size
             if (img.width > WIDTH_LIMIT) {
               img.height *= WIDTH_LIMIT / img.width
@@ -76,8 +78,10 @@ export default class ImageViewer extends React.Component {
               img.width *= HEIGHT_LIMIT / img.height 
               img.height = HEIGHT_LIMIT;
             }
+            img.classList.add(`img-initted `);
           };
 
+          
           img.classList.add("img-zoomable");
 
           // zoom single image

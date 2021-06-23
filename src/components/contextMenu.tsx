@@ -49,18 +49,46 @@ export default function ContextMenu() {
     }
   }
 
+  /**
+   * 
+   * @param evt 
+   */
   const handClickGreyScale = (evt: any) => {
     if (isImageElement(targetElement)) {
-      grayScaleFilterCss(targetElement)
+
+      let img = targetElement as HTMLImageElement;
+      var tmpCanvas = document.createElement("canvas")
+
+      tmpCanvas.width = img.naturalWidth
+      tmpCanvas.height = img.naturalHeight
+      var ctx = tmpCanvas.getContext("2d")
+      ctx!.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight)
+
+      var imgData = ctx!.getImageData(0, 0, tmpCanvas.width, tmpCanvas.height)
+     
+      var greyScaleData = grayScaleFilter(imgData.data)
+
+      imgData.data.set(greyScaleData)
+
+      ctx!.putImageData(imgData, 0, 0)
+
+      var dataURL = tmpCanvas.toDataURL()
+
+      img.src = dataURL;
+      img.onload = function() {}
     }
 
     handleClose()
   }
 
+  const handleDelete = () => {
+    handleClose()
+  }
 
   const handleClose = () => {
     setShowMenu(false)
   }
+
 
   return (
     <Menu
@@ -79,6 +107,7 @@ export default function ContextMenu() {
       <MenuItem onClick={handClickGreyScale}>GreyScale</MenuItem>
       <MenuItem onClick={handleClick}>ValueAnalyzer</MenuItem>
       <MenuItem onClick={handleClick}>ResetSize</MenuItem>
+      <MenuItem onClick={handleDelete}>Delete</MenuItem>
     </Menu>
   )
  
