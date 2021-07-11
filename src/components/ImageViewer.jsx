@@ -1,5 +1,6 @@
 import React from "react";
 
+
 import './../style.css';
 
 import { grayScaleFilter } from './../utils/imageFilter'
@@ -35,7 +36,8 @@ export default class ImageViewer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      imgIndex: 0 
+      imgIndex: 0,
+      images: []
     }
 
     this.handleDropImage = this.handleDropImage.bind(this)
@@ -48,6 +50,7 @@ export default class ImageViewer extends React.Component {
   }
   
   handleDropImage = (e) => {
+    const that = this
     let reader = new FileReader()
     console.log(e.dataTransfer)
 
@@ -61,13 +64,10 @@ export default class ImageViewer extends React.Component {
           let img = document.createElement('img')
           img.src = reader.result
 
-          img.id = this.state.imgIndex
-          this.state.imgIndex++
-
           this.viewRef.current.appendChild(img)
 
           img.onload = function() {
-            if (img.classList.contains('img-initted ')) return;
+            if (img.classList.contains("img-initted")) return;
             
             // limit image size
             if (img.width > WIDTH_LIMIT) {
@@ -78,7 +78,28 @@ export default class ImageViewer extends React.Component {
               img.width *= HEIGHT_LIMIT / img.height 
               img.height = HEIGHT_LIMIT;
             }
-            img.classList.add(`img-initted `);
+
+            var tmpCanvas = document.createElement("canvas")
+            tmpCanvas.width = img.naturalWidth
+            tmpCanvas.height = img.naturalHeight
+            var ctx = tmpCanvas.getContext("2d")
+            ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight)
+            var imgData = ctx.getImageData(0, 0, tmpCanvas.width, tmpCanvas.height)
+
+            // store image details in state
+            // https://stackoverflow.com/questions/53648661/how-to-share-state-between-child-component-siblings-in-reactjs
+            let item = {
+              id: that.state.imgIndex,
+              data: imgData
+            }
+
+            that.setState({
+              images: [...that.state.images, item]
+            })
+
+            img.classList.add(that.state.imgIndex)
+            img.classList.add("img-initted")
+            that.state.imgIndex++
           };
 
           
@@ -135,8 +156,6 @@ export default class ImageViewer extends React.Component {
       let val = Math.floor(data / 255)
       hist.push(val)
     })
-
-
   }
 
   /**

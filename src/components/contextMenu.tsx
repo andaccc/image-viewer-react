@@ -55,27 +55,39 @@ export default function ContextMenu() {
    */
   const handClickGreyScale = (evt: any) => {
     if (isImageElement(targetElement)) {
-
       let img = targetElement as HTMLImageElement;
-      var tmpCanvas = document.createElement("canvas")
+       // need 
+       var tmpCanvas = document.createElement("canvas")
 
-      tmpCanvas.width = img.naturalWidth
-      tmpCanvas.height = img.naturalHeight
-      var ctx = tmpCanvas.getContext("2d")
-      ctx!.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight)
+       tmpCanvas.width = img.naturalWidth
+       tmpCanvas.height = img.naturalHeight
+       var ctx = tmpCanvas.getContext("2d")
+       ctx!.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight)
+ 
+       var imgData = ctx!.getImageData(0, 0, tmpCanvas.width, tmpCanvas.height)
 
-      var imgData = ctx!.getImageData(0, 0, tmpCanvas.width, tmpCanvas.height)
-     
-      var greyScaleData = grayScaleFilter(imgData.data)
+      if(!img.classList.contains("img-greyscale")) {
+        // add greyscale fitler
+        var greyScaleData = grayScaleFilter(imgData.data)
+  
+        imgData.data.set(greyScaleData)
+  
+        ctx!.putImageData(imgData, 0, 0)
+  
+        var dataURL = tmpCanvas.toDataURL()
+  
+        img.src = dataURL;
+        img.onload = function() {}
+      
+        img.classList.add("img-greyscale")
+      }
+      else {
+        // remove it
 
-      imgData.data.set(greyScaleData)
 
-      ctx!.putImageData(imgData, 0, 0)
-
-      var dataURL = tmpCanvas.toDataURL()
-
-      img.src = dataURL;
-      img.onload = function() {}
+        
+      }
+      
     }
 
     handleClose()
@@ -94,7 +106,6 @@ export default function ContextMenu() {
     <Menu
       id="img-context-menu"
       keepMounted
-      //open={Boolean(anchorEl)}
       open={showMenu}
       onClose={handleClose}
       anchorReference="anchorPosition"
