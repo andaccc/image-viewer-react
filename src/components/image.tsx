@@ -14,6 +14,7 @@
  * - attach context menu
  * - image filters
  *   - so storing image data 
+ * 
  */
 import React, {useState, useEffect} from "react";
 
