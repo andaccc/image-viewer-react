@@ -1,11 +1,10 @@
 import React from "react";
 
-
 import './../style.css';
 
 import { grayScaleFilter } from './../utils/imageFilter'
-import { attachDrag } from './../utils/dragHandler'
 
+import ViewerImage from './viewerImage'
 
 //https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
 //https://medium.com/@650egor/simple-drag-and-drop-file-upload-in-react-2cb409d88929
@@ -61,59 +60,9 @@ export default class ImageViewer extends React.Component {
         // for image only
         reader.readAsDataURL(e.dataTransfer.files[0])
         reader.onloadend = () => {
-          let img = document.createElement('img')
-          img.src = reader.result
+          let ImageItem = ViewerImage(reader.result)
 
-          this.viewRef.current.appendChild(img)
-
-          img.onload = function() {
-            if (img.classList.contains("img-initted")) return;
-            
-            // limit image size
-            if (img.width > WIDTH_LIMIT) {
-              img.height *= WIDTH_LIMIT / img.width
-              img.width = WIDTH_LIMIT;
-            }
-            else if (img.height > HEIGHT_LIMIT) {
-              img.width *= HEIGHT_LIMIT / img.height 
-              img.height = HEIGHT_LIMIT;
-            }
-
-            var tmpCanvas = document.createElement("canvas")
-            tmpCanvas.width = img.naturalWidth
-            tmpCanvas.height = img.naturalHeight
-            var ctx = tmpCanvas.getContext("2d")
-            ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight)
-            var imgData = ctx.getImageData(0, 0, tmpCanvas.width, tmpCanvas.height)
-
-            // store image details in state
-            // https://stackoverflow.com/questions/53648661/how-to-share-state-between-child-component-siblings-in-reactjs
-            let item = {
-              id: that.state.imgIndex,
-              data: imgData
-            }
-
-            that.setState({
-              images: [...that.state.images, item]
-            })
-
-            img.classList.add(that.state.imgIndex)
-            img.classList.add("img-initted")
-            that.state.imgIndex++
-          };
-
-          
-          img.classList.add("img-zoomable");
-
-          // zoom single image
-          img.addEventListener('wheel', (evt) => {
-            evt.preventDefault();
-            var scale = evt.deltaY * -0.001 + 1;
-            img.height = Math.round(img.height * scale);
-            img.width = Math.round(img.width * scale);
-          })
-
-          attachDrag(img);
+          this.viewRef.current.appendChild(ImageItem)
         }
       }
     });
