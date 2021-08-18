@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from 'react-dom';
 
 import './../style.css';
 
@@ -35,8 +36,8 @@ export default class ImageViewer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      imgIndex: 0,
-      images: []
+      images: [],
+      count: 0
     }
 
     this.handleDropImage = this.handleDropImage.bind(this)
@@ -60,9 +61,21 @@ export default class ImageViewer extends React.Component {
         // for image only
         reader.readAsDataURL(e.dataTransfer.files[0])
         reader.onloadend = () => {
-          let ImageItem = ViewerImage(reader.result)
+          // append react component
+          /**
+           *  https://stackoverflow.com/questions/57867881/how-to-append-react-element-div-dynamically/57868176
+              https://stackoverflow.com/questions/37605222/can-i-append-my-component-to-a-divs-existing-content-in-reactjs
+              https://stackoverflow.com/questions/28802179/how-to-create-a-react-modalwhich-is-append-to-body-with-transitions
+              https://stackoverflow.com/questions/51404335/append-a-react-component-in-another-on-button-click
+           */
+     
+          //let ImageItem = <ViewerImage imageRawData={reader.result} key={this.state.count} />
 
-          this.viewRef.current.appendChild(ImageItem)
+          this.setState({
+            images: [...this.state.images, reader.result],
+            //images: this.state.images.concat(ImageItem),
+            count: ++this.state.count
+          })
         }
       }
     });
@@ -110,6 +123,7 @@ export default class ImageViewer extends React.Component {
   /**
    * zoom resize
    *  - need to add scale limit
+   *  - move to zoomHandler?
    * @param {*} e 
    */
   handleZoom = (e) => {
@@ -159,12 +173,19 @@ export default class ImageViewer extends React.Component {
       color: '#7B7B7B'
     }
 
-
+    const viewerImages = this.state.images.map((image, i) => {
+      <ViewerImage imageRawData={image} key={i} />
+    })
+    
     return (
       <div ref={this.viewRef} style={viewStyle} id="viewer_main">
         <p style={textStyle}>Drop image here</p>
+
+        {viewerImages}
+
         <canvas ref={this.analyzerRef} id="analyzer_canvas">
         </canvas>
+        
         <canvas ref={this.histRef} id="hist_canvas">
         </canvas>
       </div>

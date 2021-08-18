@@ -27,18 +27,22 @@ import { attachZoom } from '../utils/zoomHandler'
 const WIDTH_LIMIT = 500; 
 const HEIGHT_LIMIT = 500;
 
-const ViewerImage = (imageRawData : HTMLImageElement["src"]) => {
+const ViewerImage = (imageRawData : string|HTMLImageElement['src']) => {
 	const [rawData, setRawData] = useState(imageRawData)
 	const [imgData, setImgData] = useState<ImageData>()
+	const [imgEle, setImgEle] = useState<HTMLImageElement>()
 
 	const imgRef = useRef<HTMLImageElement>(null)
 
 	const onImageInit = () => {
-		if (imgRef.current === null) return
+		if (!rawData) return
+
 		// need new Image() ?
-		let img = imgRef.current
-		img.src = rawData
-		img.onload = () => {
+		let img = new Image()
+		img.src = rawData.imageRawData 
+		setImgEle(img)
+
+		img.onload = function() {
 
 			// limit image size
 			if (img.width > WIDTH_LIMIT) {
@@ -62,7 +66,6 @@ const ViewerImage = (imageRawData : HTMLImageElement["src"]) => {
 
 			attachDrag(img)
 			attachZoom(img)
-
 		}		
 	}
 	
@@ -74,9 +77,9 @@ const ViewerImage = (imageRawData : HTMLImageElement["src"]) => {
 
 
   return (
-		<div>
-			<img ref={imgRef}/>
-		</div>
+		<React.Fragment>
+			{imgEle}
+		</React.Fragment>
   )
 }
 

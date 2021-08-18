@@ -1,7 +1,8 @@
 // attach zoom behaviour to image
+// Also support canvas zoom?
 
 export const attachZoom = (img : HTMLImageElement) => {
-  img.classList.add("zoomable")
+  img.classList.add("img-zoomable")
   
   img.addEventListener('wheel', (evt) => {
     evt.preventDefault();
