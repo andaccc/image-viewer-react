@@ -27,46 +27,59 @@ import { attachZoom } from '../utils/zoomHandler'
 const WIDTH_LIMIT = 500; 
 const HEIGHT_LIMIT = 500;
 
-const ViewerImage = (imageRawData : string|HTMLImageElement['src']) => {
+const ViewerImage = (imageRawData : any|HTMLImageElement['src']) => {
 	const [rawData, setRawData] = useState(imageRawData)
 	const [imgData, setImgData] = useState<ImageData>()
 	const [imgEle, setImgEle] = useState<HTMLImageElement>()
 
+	const divRef = useRef<HTMLDivElement>(null)
 	const imgRef = useRef<HTMLImageElement>(null)
 
-	const onImageInit = () => {
-		if (!rawData) return
+	const onImageInit = async () => {
+		//https://stackoverflow.com/questions/46399223/async-await-in-image-loading
+		function onImageLoad() {
+			return new Promise((resolve, reject) => {
+				if (!rawData) reject()
+	
+				// need new Image() ?
+				let img = new Image()
+				img.src = rawData.imageRawData 
+				
+				img.onload = function() {
+		
+					// limit image size
+					if (img.width > WIDTH_LIMIT) {
+						img.height *= WIDTH_LIMIT / img.width
+						img.width = WIDTH_LIMIT;
+					}
+					else if (img.height > HEIGHT_LIMIT) {
+						img.width *= HEIGHT_LIMIT / img.height 
+						img.height = HEIGHT_LIMIT;
+					}
+		
+					// create tmp canvas to get the image array data
+					var tmpCanvas = document.createElement("canvas")
+					tmpCanvas.width = img.naturalWidth
+					tmpCanvas.height = img.naturalHeight
+					var ctx = tmpCanvas.getContext("2d")
+					ctx!.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight)
+					var imgData = ctx!.getImageData(0, 0, tmpCanvas.width, tmpCanvas.height)
+					
+					setImgData(imgData)
+		
+					attachDrag(img)
+					attachZoom(img)
 
-		// need new Image() ?
-		let img = new Image()
-		img.src = rawData.imageRawData 
-		setImgEle(img)
+					resolve('image loaded')
 
-		img.onload = function() {
+					divRef.current!.appendChild(img)
+				}		
 
-			// limit image size
-			if (img.width > WIDTH_LIMIT) {
-				img.height *= WIDTH_LIMIT / img.width
-				img.width = WIDTH_LIMIT;
-			}
-			else if (img.height > HEIGHT_LIMIT) {
-				img.width *= HEIGHT_LIMIT / img.height 
-				img.height = HEIGHT_LIMIT;
-			}
+				img.onerror = reject
+			})
+		} 
 
-			// create tmp canvas to get the image array data
-			var tmpCanvas = document.createElement("canvas")
-			tmpCanvas.width = img.naturalWidth
-			tmpCanvas.height = img.naturalHeight
-			var ctx = tmpCanvas.getContext("2d")
-			ctx!.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight)
-			var imgData = ctx!.getImageData(0, 0, tmpCanvas.width, tmpCanvas.height)
-			
-			setImgData(imgData)
-
-			attachDrag(img)
-			attachZoom(img)
-		}		
+		await onImageLoad()
 	}
 	
 	useEffect(() => {
@@ -77,9 +90,8 @@ const ViewerImage = (imageRawData : string|HTMLImageElement['src']) => {
 
 
   return (
-		<React.Fragment>
-			{imgEle}
-		</React.Fragment>
+		<div ref={divRef}>
+		</div>
   )
 }
 

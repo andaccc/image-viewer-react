@@ -62,18 +62,17 @@ export default class ImageViewer extends React.Component {
         reader.readAsDataURL(e.dataTransfer.files[0])
         reader.onloadend = () => {
           // append react component
-          /**
-           *  https://stackoverflow.com/questions/57867881/how-to-append-react-element-div-dynamically/57868176
-              https://stackoverflow.com/questions/37605222/can-i-append-my-component-to-a-divs-existing-content-in-reactjs
-              https://stackoverflow.com/questions/28802179/how-to-create-a-react-modalwhich-is-append-to-body-with-transitions
-              https://stackoverflow.com/questions/51404335/append-a-react-component-in-another-on-button-click
-           */
+          /*
+            https://stackoverflow.com/questions/57867881/how-to-append-react-element-div-dynamically/57868176
+            https://stackoverflow.com/questions/37605222/can-i-append-my-component-to-a-divs-existing-content-in-reactjs
+            https://stackoverflow.com/questions/28802179/how-to-create-a-react-modalwhich-is-append-to-body-with-transitions
+          */
      
-          //let ImageItem = <ViewerImage imageRawData={reader.result} key={this.state.count} />
+          //const ImageItem = <ViewerImage imageRawData={reader.result} key={this.state.count} />
 
           this.setState({
             images: [...this.state.images, reader.result],
-            //images: this.state.images.concat(ImageItem),
+            //images:  [...this.state.images, ImageItem],
             count: ++this.state.count
           })
         }
@@ -173,15 +172,18 @@ export default class ImageViewer extends React.Component {
       color: '#7B7B7B'
     }
 
-    const viewerImages = this.state.images.map((image, i) => {
-      <ViewerImage imageRawData={image} key={i} />
+    // does this rerender all images everytime?
+    const ViewerImages = this.state.images.map((image, i) => {
+      return (
+        <ViewerImage imageRawData={image} key={i} />
+      )
     })
-    
+
     return (
       <div ref={this.viewRef} style={viewStyle} id="viewer_main">
         <p style={textStyle}>Drop image here</p>
-
-        {viewerImages}
+        
+        {ViewerImages}
 
         <canvas ref={this.analyzerRef} id="analyzer_canvas">
         </canvas>
