@@ -13,6 +13,9 @@ import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import { grayScaleFilter, grayScaleFilterCss} from './../utils/imageFilter'
 
+import ViewerImage from './viewerImage'
+
+
 export default function ContextMenu() {
   const [showMenu, setShowMenu] = useState(false)
   const [xpos, setXpos] = useState(0)
@@ -55,6 +58,7 @@ export default function ContextMenu() {
    */
   const handClickGreyScale = (evt: any) => {
     if (isImageElement(targetElement)) {
+      /*
       let img = targetElement as HTMLImageElement;
        // need 
        var tmpCanvas = document.createElement("canvas")
@@ -83,11 +87,8 @@ export default function ContextMenu() {
       }
       else {
         // remove it
-
-
-        
       }
-      
+      */
     }
 
     handleClose()

@@ -120,7 +120,9 @@ export default class ImageViewer extends React.Component {
   }
 
   /**
-   * zoom resize
+   * zoom resize all images in canvas
+   * TODO: 
+   *  - attach to container
    *  - need to add scale limit
    *  - move to zoomHandler?
    * @param {*} e 
