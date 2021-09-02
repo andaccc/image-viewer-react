@@ -1,7 +1,8 @@
 /**
  * Custom context menu 
  * - image option
- * 
+ * TODO: restructure
+ * - https://nmingaleev.medium.com/how-to-create-a-custom-context-menu-with-react-hooks-30d011f205a0
  */
 
 /**
