@@ -3,12 +3,6 @@
  * - context menu
  * - all filters
  * 
- * using hooks
- * - readibility 
- * - Debug
- * - Module
- * - Encapsulated
- * 
  * TODO
  * - create image
  * - attach context menu
@@ -17,30 +11,40 @@
  * 
  * https://fettblog.eu/typescript-react/hooks/
  */
-import React, {useState, useEffect, useRef} from "react";
+import React, {useState, useEffect, useRef, useContext} from "react";
 
+import { getImageData } from '../utils/getImageData'
 import { grayScaleFilter } from '../utils/imageFilter'
 import { attachDrag } from '../utils/dragHandler'
 import { attachZoom } from '../utils/zoomHandler'
+import ViewerImageProps from './../interfaces/imageInterface'
+import ImageContext from './imageContext'
 
 // image pixel limit
 const WIDTH_LIMIT = 500; 
 const HEIGHT_LIMIT = 500;
 
-const ViewerImage = (imageRawData : any|HTMLImageElement['src']) => {
-	const [rawData, setRawData] = useState(imageRawData)
+const ViewerImage = (params: {parentRef: any, props: ViewerImageProps}) => {
+	const [rawData, setRawData] = useState(params.props.imageData)
+	const [imgIndex, setImgIndex] = useState(params.props.index)
+	const [isGreyFilter, setIsGreyFilter] = useState(params.props.isGreyScale)
 	const [imgData, setImgData] = useState<ImageData>()
 	const [imgEle, setImgEle] = useState<HTMLImageElement>()
-	//const [imgDataUrl, setImgDataUrl] = useState<string>()
 
+	const imageParams = useContext(ImageContext)
+
+	const parents = useRef<HTMLDivElement>(params.parentRef)
 	const divRef = useRef<HTMLDivElement>(null)
-	const imgRef = useRef<HTMLImageElement>(null)
 
 	const onImageInit = async () => {
 		//https://stackoverflow.com/questions/46399223/async-await-in-image-loading
 		await onImageLoad()
 	}
 	
+	useEffect(() => {
+		applyGreyScaleFilter()
+	}, [isGreyFilter]) 
+
 	useEffect(() => {
 		// run once
 		onImageInit()
@@ -49,11 +53,10 @@ const ViewerImage = (imageRawData : any|HTMLImageElement['src']) => {
 
 	function onImageLoad() {
 		return new Promise((resolve, reject) => {
-			if (!rawData) reject()
+			if (!rawData || !rawData) reject("invalid image raw data")
 
-			// need new Image() ?
 			let img = new Image()
-			img.src = rawData.imageRawData 
+			img.src = rawData 
 			
 			img.onload = function() {
 	
@@ -68,32 +71,26 @@ const ViewerImage = (imageRawData : any|HTMLImageElement['src']) => {
 				}
 	
 				// create tmp canvas to get the image array data
-				var tmpCanvas = document.createElement("canvas")
-				tmpCanvas.width = img.naturalWidth
-				tmpCanvas.height = img.naturalHeight
-				var ctx = tmpCanvas.getContext("2d")
-				ctx!.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight)
-				var imgData = ctx!.getImageData(0, 0, tmpCanvas.width, tmpCanvas.height)
-				
-				setImgData(imgData)
+				setImgData(getImageData(img))
 	
 				attachDrag(img)
 				attachZoom(img)
 
-				resolve('image loaded')
-
 				setImgEle(img)
 				divRef.current!.appendChild(img)
+
+				resolve('image loaded')
 			}		
 
 			img.onerror = reject
 		})
 	} 
 
-	const greyScaleFilter = () => {
+	const applyGreyScaleFilter = () => {
 		if (!imgEle || !imgData) return
 
 		// create tmp canvas to retrieve image data 
+		// TODO: refractor
 		var tmpCanvas = document.createElement("canvas")
 		var h = imgEle.naturalHeight
 		var w = imgEle.naturalWidth
@@ -101,13 +98,7 @@ const ViewerImage = (imageRawData : any|HTMLImageElement['src']) => {
 		tmpCanvas.height = h
 		var ctx = tmpCanvas.getContext("2d")
 
-		if(!imgEle.classList.contains("img-greyscale")) {
-			/**
-			 * 	add greyscale fitler to image component
-			 * TODO: more elegant way to do it
-			 * store the gray value?
-			 */
-
+		if(isGreyFilter) {
 			ctx!.drawImage(imgEle, 0, 0, w, h)
 			var tmpImgData = ctx!.getImageData(0, 0, w, h)
 			
@@ -118,9 +109,9 @@ const ViewerImage = (imageRawData : any|HTMLImageElement['src']) => {
 		  imgEle.classList.add("img-greyscale")
 	  }
 	  else {
-		  // remove it
+		  // recover color
 			imgEle.classList.remove("img-greyscale")
-			imgEle.src = rawData.imageRawData
+			imgEle.src = rawData
 			imgEle.onload = function() {
 				// back to previous size
 				imgEle.height = h

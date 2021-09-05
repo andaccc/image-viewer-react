@@ -1,65 +1,61 @@
 /**
  * Custom context menu 
  * - image option
- * TODO: restructure?
+ * TODO: restructure
  * - https://nmingaleev.medium.com/how-to-create-a-custom-context-menu-with-react-hooks-30d011f205a0
- * 
- * - https://www.javascriptstuff.com/component-communication/
  */
 
-/**
- * react hook ref:
- * https://codesandbox.io/s/proud-surf-31821?fontsize=14&hidenavigation=1&theme=dark&file=/src/lecturer.js
- */
 import React, {useState, useEffect} from "react"
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import { grayScaleFilter, grayScaleFilterCss} from './../utils/imageFilter'
 
-import ViewerImage from './viewerImage'
-import ViewerImageProps from './../interfaces/imageInterface'
-
-
-const ContextMenu = (params: {parentRef: any, props: ViewerImageProps}) => {
-  const [showMenu, setShowMenu] = useState(false)
+const ImageContextMenu = (parentRef: any) => {
+  const [isVisible, setIsVisible] = useState(false)
   const [xpos, setXpos] = useState(0)
   const [ypos, setYpos] = useState(0)
   const [targetElement, setTargetElement] = useState({} as HTMLElement)
 
   useEffect(() => {
-    // TODO: separate normal and image context menu
+    const parent = parentRef
+    if (!parent) {
+      return
+    } 
+
     document.addEventListener("contextmenu", handleContextMenu)
     
+    // clean up
     return () => {
       document.removeEventListener("contextmenu", handleContextMenu)
     }
   })
 
-  const isImageElement = (ele: HTMLElement) => {
-    return ele.tagName === 'IMG'
-  }
-
   const handleContextMenu = (evt: any) => {
-    // store target element and details 
-    
     evt.preventDefault() 
-    setShowMenu(true)
+    setIsVisible(true)
     setXpos(evt.pageX)
     setYpos(evt.pageY)
     setTargetElement(evt.target)
   }
-
-  const handleClick = (evt: any) => {
-    // close menu
-    if (showMenu) {
-      setShowMenu(false)
-    }
+  
+  const isImageElement = (ele: HTMLElement) => {
+    return ele.tagName === 'IMG'
   }
 
   /**
-   * 
-   * @param evt 
+   * on click menu tmp
    */
+  const onClick = (evt: any) => {
+    // close menu
+    if (isVisible) {
+      setIsVisible(false)
+    }
+  }
+ 
+  /**
+  * on greyScale
+  * @param evt 
+  */
   const onGreyScale = (evt: any) => {
     if (isImageElement(targetElement)) {
     
@@ -68,33 +64,21 @@ const ContextMenu = (params: {parentRef: any, props: ViewerImageProps}) => {
     onClose()
   }
 
-  // trigger value analyzer
-  // TODO
-  const onValueAnalyzer = () => {
-    onClose()
-  }
-
-  // on reset image
-  // TODO
-  const onReset = () => {
-    onClose()
-  }
-
-  // on delete image
-  // TODO
+  // on delete option
   const onDelete = () => {
     onClose()
   }
 
+  // on menu close
   const onClose = () => {
-    setShowMenu(false)
+    setIsVisible(false)
   }
 
   return (
     <Menu
       id="img-context-menu"
       keepMounted
-      open={showMenu}
+      open={isVisible}
       onClose={onClose}
       anchorReference="anchorPosition"
       anchorPosition={
@@ -104,11 +88,11 @@ const ContextMenu = (params: {parentRef: any, props: ViewerImageProps}) => {
       }
     >
       <MenuItem onClick={onGreyScale}>GreyScale</MenuItem>
-      <MenuItem onClick={onValueAnalyzer}>ValueAnalyzer</MenuItem>
-      <MenuItem onClick={onReset}>ResetSize</MenuItem>
+      <MenuItem onClick={onClick}>ValueAnalyzer</MenuItem>
+      <MenuItem onClick={onClick}>ResetSize</MenuItem>
       <MenuItem onClick={onDelete}>Delete</MenuItem>
     </Menu>
-  )
+  )  
 }
 
-export default ContextMenu
+export default ImageContextMenu

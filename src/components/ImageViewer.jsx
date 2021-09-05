@@ -5,7 +5,9 @@ import './../style.css';
 
 import { grayScaleFilter } from './../utils/imageFilter'
 
+import ViewerImageProps from './../interfaces/imageInterface'
 import ViewerImage from './viewerImage'
+import ContextMenu from './contextMenu'
 
 //https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
 //https://medium.com/@650egor/simple-drag-and-drop-file-upload-in-react-2cb409d88929
@@ -13,24 +15,11 @@ import ViewerImage from './viewerImage'
 // image drag drop use native api instead !!!!
 // https://www.electronjs.org/docs/tutorial/native-file-drag-drop
 
-/**
- * TODO: image use react state
- */
-
-const defaultProps = {
-  borderRadius: "borderRadius",
-  bgcolor: '#424242',
-  borderColor: 'grey.500',
-  m: 5,
-  p: 5,
-  border: 1,
-  display: "flex",
-  justifyContent: "center"
-};
-
-// pixel
-const WIDTH_LIMIT = 500; 
-const HEIGHT_LIMIT = 500;
+/*
+interface ViewerImageProps {
+  images: Image[];
+}
+*/
 
 export default class ImageViewer extends React.Component {
   constructor(props) {
@@ -41,7 +30,6 @@ export default class ImageViewer extends React.Component {
     }
 
     this.handleDropImage = this.handleDropImage.bind(this)
-    this.handleZoom = this.handleZoom.bind(this)
     this.triggerValueAnalyzer = this.triggerValueAnalyzer.bind(this)
 
     this.viewRef = React.createRef()
@@ -52,7 +40,6 @@ export default class ImageViewer extends React.Component {
   handleDropImage = (e) => {
     const that = this
     let reader = new FileReader()
-    console.log(e.dataTransfer)
 
     let files = e.dataTransfer.files;
 
@@ -70,9 +57,15 @@ export default class ImageViewer extends React.Component {
      
           //const ImageItem = <ViewerImage imageRawData={reader.result} key={this.state.count} />
 
+          // move to interface folder
+          let image = {
+            imageData: reader.result,
+            index: ++this.state.count,
+            isGreyScale: false
+          }
+
           this.setState({
-            images: [...this.state.images, reader.result],
-            //images:  [...this.state.images, ImageItem],
+            images: [...this.state.images, image],
             count: ++this.state.count
           })
         }
@@ -88,10 +81,6 @@ export default class ImageViewer extends React.Component {
    */
   triggerValueAnalyzer = (imgId) => {
     var img = document.getElementById(imgId)
-
-    if (img.classList.contains("img-greyscale")) {
-      img.classList.remove("img-greyscale")
-    }
 
     var tmp = img.cloneNode(true)
     
@@ -117,29 +106,6 @@ export default class ImageViewer extends React.Component {
       let val = Math.floor(data / 255)
       hist.push(val)
     })
-  }
-
-  /**
-   * zoom resize all images in canvas
-   * TODO: 
-   *  - attach to container
-   *  - need to add scale limit
-   *  - move to zoomHandler?
-   * @param {*} e 
-   */
-  handleZoom = (e) => {
-    e.preventDefault();
-    var scale = e.deltaY * -0.001 + 1;
-
-    var items = document.getElementsByClassName("img-zoomable");
-    for (var i = 0; i < items.length; i++) {
-
-      // if no round up, when value < 10, it cant scale up
-      items[i].height = Math.round(items[i].height * scale);
-      items[i].width = Math.round(items[i].width * scale);
-      
-      //console.log(items[i].width)
-    }
   }
 
   componentDidMount() {
@@ -177,7 +143,7 @@ export default class ImageViewer extends React.Component {
     // does this rerender all images everytime?
     const ViewerImages = this.state.images.map((image, i) => {
       return (
-        <ViewerImage imageRawData={image} key={i} />
+        <ViewerImage parentRef={this.viewRef} props={image} key={i} />
       )
     })
 
@@ -192,6 +158,8 @@ export default class ImageViewer extends React.Component {
         
         <canvas ref={this.histRef} id="hist_canvas">
         </canvas>
+
+        <ContextMenu />
       </div>
     );
   }

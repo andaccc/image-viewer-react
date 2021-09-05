@@ -15,7 +15,7 @@ export default class Main extends React.Component {
     return (
       <Container id="main">
         <ImageViewer />
-        <ContextMenu />
+        
       </Container>
     )
   }
