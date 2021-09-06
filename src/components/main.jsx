@@ -1,7 +1,10 @@
+import React from "react";
+
 import Container from '@material-ui/core/Container';
 import ImageViewer from "./ImageViewer"
 import ContextMenu from './contextMenu'
-import React from "react";
+
+import Parent from './../test/Parent'
 
 // main container
 export default class Main extends React.Component {
@@ -14,8 +17,8 @@ export default class Main extends React.Component {
   render() {
     return (
       <Container id="main">
+        <Parent/>
         <ImageViewer />
-        
       </Container>
     )
   }

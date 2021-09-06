@@ -53,6 +53,7 @@ const ViewerImage = (params: {parentRef: any, props: ViewerImageProps}) => {
 
 	function onImageLoad() {
 		return new Promise((resolve, reject) => {
+			if (!divRef.current) reject("invalid ref")
 			if (!rawData || !rawData) reject("invalid image raw data")
 
 			let img = new Image()
@@ -77,7 +78,8 @@ const ViewerImage = (params: {parentRef: any, props: ViewerImageProps}) => {
 				attachZoom(img)
 
 				setImgEle(img)
-				divRef.current!.appendChild(img)
+				divRef.current?.appendChild(img)
+				divRef.current?.classList.add(`img-id-${imgIndex}`)
 
 				resolve('image loaded')
 			}		
