@@ -8,13 +8,11 @@
  */
 
 import React, {useState, useEffect, useContext} from "react"
-import Child from "./Child";
-import Child2 from "./Child2";
-import { TestContextProvider } from "./testContext";
+import Child from "./Child"
+import Child2 from "./Child2"
+import { TestContextProvider } from "./testContext"
 
 const Parent = () => {
-  //const testProps = useContext(testContext);
-
   useEffect(() => {
 
   })
@@ -22,6 +20,7 @@ const Parent = () => {
   return (
     <TestContextProvider>
       <div>
+        test
         <Child/>
         <Child2/>
       </div>

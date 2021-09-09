@@ -1,20 +1,38 @@
-import React, {useState} from "react"
+import React, {useEffect, useState, Dispatch} from "react"
 
-const testProps = {
+import {IStateProps, IContextProps} from "./testInterface";
+
+/**
+ * React Hook Context + Typescript implementation 
+ * https://stackoverflow.com/questions/54577865/react-createcontext-issue-in-typescript/54667477
+ */
+
+const testProps : IStateProps = {
   text: 'test',
   bool: false
 };
 
-//const TestContext = React.createContext(testProps);
-const TestContext = React.createContext([{}, () => {}]);
+const initialContext = {
+  state: testProps,
+  setState: (state: IStateProps) => {},
+};
+
+// [{}, () => {}]
+const TestContext = React.createContext([{} as IStateProps, (state: IStateProps) => {} ]);
 
 const TestContextProvider = (props: any) => {
-  const [state, setState] = useState(testProps)
+  const [state, setState] = useState(testProps) 
+  
+  useEffect(() => {
+    //setState(testProps)
+  }, [])  
+
   return (
-    <TestContext.Provider value = {[state, setState]}>
-      {props}
+    <TestContext.Provider value = { [state, setState] }>
+      {props.children}
     </TestContext.Provider>
   )
 }
 
 export { TestContext, TestContextProvider}
+

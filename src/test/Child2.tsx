@@ -3,15 +3,18 @@ import { TestContext } from "./testContext";
 
 const Child2 = () => {
   const [state, setState] = useContext(TestContext)
+  
   useEffect(() => {
 
-  })
+  }, [state])
 
   const onClick = () => {
+    let flipState = !state.bool
+
     setState(state => ({
-      ...state, bool: true
-    })
-    )
+      ...state, bool: flipState
+    }))
+    
   }
 
   return (

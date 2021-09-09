@@ -2,13 +2,14 @@ import React, {useState, useEffect, useContext} from "react"
 import { TestContext } from "./testContext";
 
 const Child = () => {
-  const testProps = useContext(testContext);
+  const [state, setState] = useContext(TestContext)
 
   useEffect(() => {
-  }, [testProps.bool])
+    console.log(state.bool)
+  }, [])
 
-  return (
-    <p>Child: {testProps.bool? 'true' : 'false'}</p>
+  return (  
+    <p>Child: {state.bool? 'true' : 'false'}</p>
   )  
 }
 
