@@ -1,15 +1,14 @@
-import React, {useState, useEffect, useContext} from "react"
+import React, {useEffect, useContext} from "react"
 import { TestContext } from "./testContext";
 
 const Child = () => {
-  const [state, setState] = useContext(TestContext)
-
-  useEffect(() => {
-    console.log(state.bool)
-  }, [])
+  const {state, setState} = useContext(TestContext)
 
   return (  
-    <p>Child: {state.bool? 'true' : 'false'}</p>
+    <React.Fragment>
+      <p>{state.text}</p>
+      <p>Child: {state.bool? 'true' : 'false'}</p>
+    </React.Fragment>
   )  
 }
 

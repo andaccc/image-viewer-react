@@ -11,33 +11,47 @@
  * react hook ref:
  * https://codesandbox.io/s/proud-surf-31821?fontsize=14&hidenavigation=1&theme=dark&file=/src/lecturer.js
  */
-import React, {useState, useEffect} from "react"
+import {useState, useEffect} from "react"
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-import { grayScaleFilter, grayScaleFilterCss} from './../utils/imageFilter'
 
-import ViewerImage from './viewerImage'
-import ViewerImageProps from './../interfaces/imageInterface'
-
-
-const ContextMenu = (params: {parentRef: any, props: ViewerImageProps}) => {
+const ContextMenu = () => {
   const [showMenu, setShowMenu] = useState(false)
   const [xpos, setXpos] = useState(0)
   const [ypos, setYpos] = useState(0)
   const [targetElement, setTargetElement] = useState({} as HTMLElement)
 
+  const [testCount, setTestCount] = useState(0)
+
+  /*
+  useEffect(() => {
+    //https://stackoverflow.com/questions/53024496/state-not-updating-when-using-react-state-hook-within-setinterval
+
+    setInterval(function() { 
+      var newCount = testCount + 1
+      setTestCount( newCount ) 
+
+    }, 1000)
+  }, [])
+  */
+
+
   useEffect(() => {
     // TODO: separate normal and image context menu
     document.addEventListener("contextmenu", handleContextMenu)
-    
+
     return () => {
       document.removeEventListener("contextmenu", handleContextMenu)
     }
-  })
+  }, [])
 
   const isImageElement = (ele: HTMLElement) => {
     return ele.tagName === 'IMG'
   }
+
+  useEffect(() => {
+    console.log(testCount)
+  }, [testCount])
 
   const handleContextMenu = (evt: any) => {
     // store target element and details 
@@ -47,6 +61,8 @@ const ContextMenu = (params: {parentRef: any, props: ViewerImageProps}) => {
     setXpos(evt.pageX)
     setYpos(evt.pageY)
     setTargetElement(evt.target)
+
+    
   }
 
   const handleClick = (evt: any) => {

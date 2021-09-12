@@ -12,7 +12,7 @@ export interface IStateProps {
  */
 export interface IContextProps {
   state: IStateProps,
-  //setState: React.Dispatch<React.SetStateAction<string>>
-  setState: () => {}
+  setState: React.Dispatch<React.SetStateAction<IStateProps>>
+  //setState: () => {}
 }
 

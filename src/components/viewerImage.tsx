@@ -17,17 +17,16 @@ import { getImageData } from '../utils/getImageData'
 import { grayScaleFilter } from '../utils/imageFilter'
 import { attachDrag } from '../utils/dragHandler'
 import { attachZoom } from '../utils/zoomHandler'
-import ViewerImageProps from './../interfaces/imageInterface'
-import ImageContext from './imageContext'
+import { ImageContext } from './imageContext'
 
 // image pixel limit
 const WIDTH_LIMIT = 500; 
 const HEIGHT_LIMIT = 500;
 
-const ViewerImage = (params: {parentRef: any, props: ViewerImageProps}) => {
-	const [rawData, setRawData] = useState(params.props.imageData)
-	const [imgIndex, setImgIndex] = useState(params.props.index)
-	const [isGreyFilter, setIsGreyFilter] = useState(params.props.isGreyScale)
+const ViewerImage = (params: any) => {
+	const [rawData, setRawData] = useState(params.image.imageData)
+	const [imgIndex, setImgIndex] = useState(params.image.index)
+	const [isGreyFilter, setIsGreyFilter] = useState(params.image.isGreyScale)
 	const [imgData, setImgData] = useState<ImageData>()
 	const [imgEle, setImgEle] = useState<HTMLImageElement>()
 
@@ -45,10 +44,43 @@ const ViewerImage = (params: {parentRef: any, props: ViewerImageProps}) => {
 		applyGreyScaleFilter()
 	}, [isGreyFilter]) 
 
+	const applyGreyScaleFilter = () => {
+		if (!imgEle || !imgData) return
+
+		// create tmp canvas to retrieve image data 
+		// TODO: refractor
+		var tmpCanvas = document.createElement("canvas")
+		var h = imgEle.naturalHeight
+		var w = imgEle.naturalWidth
+		tmpCanvas.width = w
+		tmpCanvas.height = h
+		var ctx = tmpCanvas.getContext("2d")
+
+		if(isGreyFilter) {
+			ctx!.drawImage(imgEle, 0, 0, w, h)
+			var tmpImgData = ctx!.getImageData(0, 0, w, h)
+			
+			tmpImgData.data.set(grayScaleFilter(tmpImgData.data))
+			ctx!.putImageData(tmpImgData, 0, 0)
+			imgEle.src = tmpCanvas.toDataURL()
+			imgEle.onload = function() {} 
+			imgEle.classList.add("img-greyscale")
+		}
+		else {
+			// recover color
+			imgEle.classList.remove("img-greyscale")
+			imgEle.src = rawData
+			imgEle.onload = function() {
+				// back to previous size
+				imgEle.height = h
+				imgEle.width = w
+			}
+		}
+	}  
+
 	useEffect(() => {
 		// run once
-		onImageInit()
-
+		onImageInit() 
 	}, [rawData]) // or on target state change
 
 	function onImageLoad() {
@@ -88,45 +120,10 @@ const ViewerImage = (params: {parentRef: any, props: ViewerImageProps}) => {
 		})
 	} 
 
-	const applyGreyScaleFilter = () => {
-		if (!imgEle || !imgData) return
-
-		// create tmp canvas to retrieve image data 
-		// TODO: refractor
-		var tmpCanvas = document.createElement("canvas")
-		var h = imgEle.naturalHeight
-		var w = imgEle.naturalWidth
-		tmpCanvas.width = w
-		tmpCanvas.height = h
-		var ctx = tmpCanvas.getContext("2d")
-
-		if(isGreyFilter) {
-			ctx!.drawImage(imgEle, 0, 0, w, h)
-			var tmpImgData = ctx!.getImageData(0, 0, w, h)
-			
-		  tmpImgData.data.set(grayScaleFilter(tmpImgData.data))
-		  ctx!.putImageData(tmpImgData, 0, 0)
-			imgEle.src = tmpCanvas.toDataURL()
-			imgEle.onload = function() {} 
-		  imgEle.classList.add("img-greyscale")
-	  }
-	  else {
-		  // recover color
-			imgEle.classList.remove("img-greyscale")
-			imgEle.src = rawData
-			imgEle.onload = function() {
-				// back to previous size
-				imgEle.height = h
-				imgEle.width = w
-			}
-	  }
-	}  
-
   return (
 		<div ref={divRef}>
 		</div>
   )
 }
-
 
 export default ViewerImage

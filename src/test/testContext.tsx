@@ -1,4 +1,4 @@
-import React, {useEffect, useState, Dispatch} from "react"
+import React, {useEffect, useState} from "react"
 
 import {IStateProps, IContextProps} from "./testInterface";
 
@@ -18,7 +18,12 @@ const initialContext = {
 };
 
 // [{}, () => {}]
-const TestContext = React.createContext([{} as IStateProps, (state: IStateProps) => {} ]);
+// array
+// [0]: state
+// [1]: setState function 
+//const contextType = [{} as IStateProps, (() => {}) as React.Dispatch<React.SetStateAction<IStateProps>> ]
+const contextType = {} as IContextProps
+const TestContext = React.createContext(contextType);
 
 const TestContextProvider = (props: any) => {
   const [state, setState] = useState(testProps) 
@@ -28,7 +33,7 @@ const TestContextProvider = (props: any) => {
   }, [])  
 
   return (
-    <TestContext.Provider value = { [state, setState] }>
+    <TestContext.Provider value={ {state, setState} }>
       {props.children}
     </TestContext.Provider>
   )

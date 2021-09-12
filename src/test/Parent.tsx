@@ -7,20 +7,15 @@
  * https://upmostly.com/tutorials/how-to-use-the-usecontext-hook-in-react
  */
 
-import React, {useState, useEffect, useContext} from "react"
+import {useEffect, useContext} from "react"
 import Child from "./Child"
 import Child2 from "./Child2"
 import { TestContextProvider } from "./testContext"
 
 const Parent = () => {
-  useEffect(() => {
-
-  })
-
   return (
     <TestContextProvider>
       <div>
-        test
         <Child/>
         <Child2/>
       </div>
