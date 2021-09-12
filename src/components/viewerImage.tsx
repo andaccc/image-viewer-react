@@ -24,13 +24,13 @@ const WIDTH_LIMIT = 500;
 const HEIGHT_LIMIT = 500;
 
 const ViewerImage = (params: any) => {
+	const imageParams = useContext(ImageContext)
+
 	const [rawData, setRawData] = useState(params.image.imageData)
 	const [imgIndex, setImgIndex] = useState(params.image.index)
 	const [isGreyFilter, setIsGreyFilter] = useState(params.image.isGreyScale)
 	const [imgData, setImgData] = useState<ImageData>()
 	const [imgEle, setImgEle] = useState<HTMLImageElement>()
-
-	const imageParams = useContext(ImageContext)
 
 	const parents = useRef<HTMLDivElement>(params.parentRef)
 	const divRef = useRef<HTMLDivElement>(null)
@@ -40,6 +40,11 @@ const ViewerImage = (params: any) => {
 		await onImageLoad()
 	}
 	
+	// need to manualy update it...
+	useEffect(() => {
+		setIsGreyFilter(params.image.isGreyScale)
+	}, [params.image.isGreyScale])
+
 	useEffect(() => {
 		applyGreyScaleFilter()
 	}, [isGreyFilter]) 
@@ -72,8 +77,8 @@ const ViewerImage = (params: any) => {
 			imgEle.src = rawData
 			imgEle.onload = function() {
 				// back to previous size
-				imgEle.height = h
-				imgEle.width = w
+				//imgEle.height = h
+				//imgEle.width = w
 			}
 		}
 	}  
@@ -111,7 +116,8 @@ const ViewerImage = (params: any) => {
 
 				setImgEle(img)
 				divRef.current?.appendChild(img)
-				divRef.current?.classList.add(`img-id-${imgIndex}`)
+				//img.classList.add(`img-id-${imgIndex}`)
+				img.id = imgIndex
 
 				resolve('image loaded')
 			}		

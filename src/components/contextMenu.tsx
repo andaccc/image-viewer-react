@@ -11,11 +11,15 @@
  * react hook ref:
  * https://codesandbox.io/s/proud-surf-31821?fontsize=14&hidenavigation=1&theme=dark&file=/src/lecturer.js
  */
-import {useState, useEffect} from "react"
+import {useState, useEffect, useContext} from "react"
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 
+import { ImageContext } from './imageContext'
+
 const ContextMenu = () => {
+  const {imageState, setImageState} = useContext(ImageContext)
+
   const [showMenu, setShowMenu] = useState(false)
   const [xpos, setXpos] = useState(0)
   const [ypos, setYpos] = useState(0)
@@ -24,6 +28,7 @@ const ContextMenu = () => {
   const [testCount, setTestCount] = useState(0)
 
   /*
+  // setState inside useEffect test 
   useEffect(() => {
     //https://stackoverflow.com/questions/53024496/state-not-updating-when-using-react-state-hook-within-setinterval
 
@@ -33,6 +38,10 @@ const ContextMenu = () => {
 
     }, 1000)
   }, [])
+
+  useEffect(() => {
+    console.log(testCount)
+  }, [testCount])
   */
 
 
@@ -48,10 +57,6 @@ const ContextMenu = () => {
   const isImageElement = (ele: HTMLElement) => {
     return ele.tagName === 'IMG'
   }
-
-  useEffect(() => {
-    console.log(testCount)
-  }, [testCount])
 
   const handleContextMenu = (evt: any) => {
     // store target element and details 
@@ -78,11 +83,34 @@ const ContextMenu = () => {
    */
   const onGreyScale = (evt: any) => {
     if (isImageElement(targetElement)) {
-    
+      let id = targetElement.id
+
+      let i = imageState.images.findIndex(x => x.index.toString() === id)
+
+      // https://stackoverflow.com/questions/37662708/react-updating-state-when-state-is-an-array-of-objects
+      // find the image by id 
+      // and flip the grey scale flag
+      // TODO: move to reducer
+      if (i !== -1) {
+        setImageState(prevState => ({
+          images: [
+            ...prevState.images.slice(0, i),
+            Object.assign({}, prevState.images[i], {isGreyScale: !prevState.images[i].isGreyScale}),
+            ...prevState.images.slice(i + 1)
+          ],
+          count: prevState.count
+        })
+        )
+      }
+
     }
 
     onClose()
   }
+
+  useEffect(() => {
+    //console.log(imageState)
+  }, [imageState])
 
   // trigger value analyzer
   // TODO
