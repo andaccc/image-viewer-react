@@ -25,26 +25,6 @@ const ContextMenu = () => {
   const [ypos, setYpos] = useState(0)
   const [targetElement, setTargetElement] = useState({} as HTMLElement)
 
-  const [testCount, setTestCount] = useState(0)
-
-  /*
-  // setState inside useEffect test 
-  useEffect(() => {
-    //https://stackoverflow.com/questions/53024496/state-not-updating-when-using-react-state-hook-within-setinterval
-
-    setInterval(function() { 
-      var newCount = testCount + 1
-      setTestCount( newCount ) 
-
-    }, 1000)
-  }, [])
-
-  useEffect(() => {
-    console.log(testCount)
-  }, [testCount])
-  */
-
-
   useEffect(() => {
     // TODO: separate normal and image context menu
     document.addEventListener("contextmenu", handleContextMenu)

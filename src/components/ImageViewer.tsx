@@ -8,7 +8,6 @@ import ViewerImage from './viewerImage'
 import ContextMenu from './contextMenu'
 
 import { ImageContext } from './imageContext'
-import { IViewerImageState, IViewerImage } from "./imageInterface";
 
 //https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
 //https://medium.com/@650egor/simple-drag-and-drop-file-upload-in-react-2cb409d88929
