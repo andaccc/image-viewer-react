@@ -10,10 +10,13 @@ current support
    - apply greyscale filter
 
 ========================
+
 Original from https://github.com/andaccc/image-viewer-electron
+
 now try to port as a pure web version 
 
 Grey Scale/ histogram logic referenced from :
+
 https://phg1024.github.io/image/processing/2014/02/26/ImageProcJS4.html
 
 === TODO ===
