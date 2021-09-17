@@ -3,6 +3,7 @@
 Hosting on aws: https://master.d2o67qcn52znqy.amplifyapp.com 
 
 pure front end app
+
 current support
 - drag drop single image
 - right click for context menu
