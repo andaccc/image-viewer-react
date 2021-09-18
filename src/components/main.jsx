@@ -17,7 +17,7 @@ export default class Main extends React.Component {
   render() {
     return (
       <Container id="main">
-        <Parent/>
+        {/* <Parent/> */}
         <ImageContextProvider>
           <ImageViewer />
         </ImageContextProvider>

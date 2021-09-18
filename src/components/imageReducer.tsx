@@ -1,16 +1,32 @@
 /**
  * https://alligator.io/react/usereducer/
  */
+
+import React, {useContext} from 'react'
+
 import {IViewerImageState, IViewerImageContext} from "./imageInterface";
+import { ImageContext } from './imageContext'
 
-export type ACTIONS = any
+export type ImageActions = any
 
-export const reducer = (imageState: IViewerImageState, action: ACTIONS) => {
+// test dispatch wrapper 
+export const useImageReducer = () => {
+  const {imageState, dispatch} = useContext(ImageContext)
+
+  const addImage = (imageData: any) => {
+    dispatch({ type: 'ADD', payload: imageData });
+  }
+
+  return { addImage }
+}
+
+
+export const imageReducer = (imageState: IViewerImageState, action: ImageActions): IViewerImageState => {
   switch (action.type) {
     case "ADD": {
       let newContext = {
         images: [...imageState.images, {
-          imageData: action.paylow,
+          imageData: action.payload,
           index: imageState.count,
           isGreyScale: false
         }],
@@ -21,9 +37,9 @@ export const reducer = (imageState: IViewerImageState, action: ACTIONS) => {
     }
 
     case "GREY_FILTER": {
-      const id = action.paylow
+      const id = action.payload
 
-      if (id === -1) return imageState
+      if (id === -1 || id === undefined) return imageState
       let newContext = {
         images: [
           ...imageState.images.slice(0, id),
@@ -38,26 +54,6 @@ export const reducer = (imageState: IViewerImageState, action: ACTIONS) => {
     }
 
     case "DELETE":
-      return {}
+      return {} as IViewerImageState
   }
-
-
-  /*
-  if(action.type == 'chomp') {
-    return people.map(person => {
-      if(person.name == action.payload) {
-        person.alive = false;
-      }
-      return person;
-    })
-  }
-  if(action.type == 'revive') {
-    return people.map(person => {
-      if(person.name == action.payload) {
-        person.alive = true;
-      }
-      return person;
-    })
-  }
-  */
 }

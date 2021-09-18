@@ -18,7 +18,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import { ImageContext } from './imageContext'
 
 const ContextMenu = () => {
-  const {imageState, setImageState} = useContext(ImageContext)
+  const {imageState, dispatch} = useContext(ImageContext)
 
   const [showMenu, setShowMenu] = useState(false)
   const [xpos, setXpos] = useState(0)
@@ -65,24 +65,13 @@ const ContextMenu = () => {
     if (isImageElement(targetElement)) {
       let id = targetElement.id
 
+      // string to num
       let i = imageState.images.findIndex(x => x.index.toString() === id)
 
       // https://stackoverflow.com/questions/37662708/react-updating-state-when-state-is-an-array-of-objects
       // find the image by id 
       // and flip the grey scale flag
-      // TODO: move to reducer
-      if (i !== -1) {
-        setImageState(prevState => ({
-          images: [
-            ...prevState.images.slice(0, i),
-            Object.assign({}, prevState.images[i], {isGreyScale: !prevState.images[i].isGreyScale}),
-            ...prevState.images.slice(i + 1)
-          ],
-          count: prevState.count
-        })
-        )
-      }
-
+      dispatch({ type: 'GREY_FILTER', payload: i})
     }
 
     onClose()

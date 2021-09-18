@@ -1,12 +1,13 @@
-import React, {useEffect, useState} from "react"
+import React, {useEffect, useState, useReducer} from "react"
 
 import {IViewerImageState, IViewerImageContext} from "./imageInterface";
 
+import { imageReducer, ImageActions } from "./imageReducer"
 
 /**
  * for context menu broadcast signal
  */
- const initProps : IViewerImageState = {
+ const initialState : IViewerImageState = {
   images: [],
   count:0
 };
@@ -16,13 +17,14 @@ const contextType = {} as IViewerImageContext
 const ImageContext = React.createContext(contextType);
 
 const ImageContextProvider = (props: any) => {
-  const [state, setState] = useState(initProps) 
-  
-  useEffect(() => {
-  }, [])  
+  //const [state, setState] = useState(initialState) 
+
+  const [state, dispatch] = useReducer(imageReducer, initialState);
+
+  const providerValue = {imageState : state, dispatch : dispatch}
 
   return (
-    <ImageContext.Provider value={ {imageState : state, setImageState : setState} }>
+    <ImageContext.Provider value={ providerValue }>
       {props.children}
     </ImageContext.Provider>
   )

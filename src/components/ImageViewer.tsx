@@ -14,7 +14,7 @@ import { ImageContext } from './imageContext'
 
 
 const ImageViewer = () => {
-  const {imageState, setImageState} = useContext(ImageContext)
+  const {imageState, dispatch} = useContext(ImageContext)
 
   const viewRef = useRef<HTMLDivElement>(null)
   const analyzerRef = useRef<HTMLCanvasElement>(null)
@@ -61,14 +61,8 @@ const ImageViewer = () => {
           // update image context
           // must use preState inside useEffect
           // TODO: try useReducer
-          setImageState(prevState => ({
-            images: [...prevState.images, {
-              imageData: reader.result,
-              index: prevState.count,
-              isGreyScale: false
-            }],
-            count: prevState.count + 1
-          }))
+
+          dispatch({ type: 'ADD', payload: reader.result})
 
         }
       }

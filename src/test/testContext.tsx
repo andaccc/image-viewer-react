@@ -26,7 +26,8 @@ const contextType = {} as IContextProps
 const TestContext = React.createContext(contextType);
 
 const TestContextProvider = (props: any) => {
-  const [state, setState] = useState(testProps) 
+  // const [state, dispatch] = useReducer(reducer, initialState);
+    const [state, setState] = useState(testProps) 
   
   useEffect(() => {
     //setState(testProps)

@@ -1,4 +1,5 @@
-import React, { Dispatch, useReducer } from "react";
+import React from "react";
+import { ImageActions } from "./imageReducer"
 
 export interface IViewerImage {
   imageData: string | ArrayBuffer,
@@ -18,7 +19,8 @@ export interface IViewerImageState {
  */
 export interface IViewerImageContext {
   imageState: IViewerImageState,
-  //setState: React.Dispatch<React.SetStateAction<string>>
-  setImageState: React.Dispatch<React.SetStateAction<IViewerImageState>>
+  //setImageState: React.Dispatch<React.SetStateAction<IViewerImageState>>
+  dispatch: React.Dispatch<ImageActions>
+
 }
 
