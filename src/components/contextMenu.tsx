@@ -1,17 +1,11 @@
 /**
  * Custom context menu 
  * - image option
- * TODO: restructure?
- * - https://nmingaleev.medium.com/how-to-create-a-custom-context-menu-with-react-hooks-30d011f205a0
  * 
- * - https://www.javascriptstuff.com/component-communication/
+ * https://mui.com/api/menu/
  */
 
-/**
- * react hook ref:
- * https://codesandbox.io/s/proud-surf-31821?fontsize=14&hidenavigation=1&theme=dark&file=/src/lecturer.js
- */
-import {useState, useEffect, useContext} from "react"
+import React, {useState, useEffect, useContext} from "react"
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 
@@ -25,6 +19,8 @@ const ContextMenu = () => {
   const [ypos, setYpos] = useState(0)
   const [targetElement, setTargetElement] = useState({} as HTMLElement)
 
+  const [isImageMenu, setIsImageMenu] = useState(false)
+
   useEffect(() => {
     // TODO: separate normal and image context menu
     document.addEventListener("contextmenu", handleContextMenu)
@@ -34,20 +30,43 @@ const ContextMenu = () => {
     }
   }, [])
 
+  useEffect(() => {
+   
+  }, [])
+
   const isImageElement = (ele: HTMLElement) => {
     return ele.tagName === 'IMG'
   }
 
   const handleContextMenu = (evt: any) => {
-    // store target element and details 
+    evt.preventDefault() // remove browser default menu
+
+    // store target element and details
     
-    evt.preventDefault() 
-    setShowMenu(true)
+    /**
+     * BUG: when menu is open
+     * - right again
+     * - the target is always towards menu
+     * any way to get the underneath element?
+     * https://stackoverflow.com/questions/29518070/how-to-detecting-a-click-under-an-overlapping-element
+     * 
+     * for now just close the menu if it is opened
+     */
+
+    // https://stackoverflow.com/questions/54069253/usestate-set-method-not-reflecting-change-immediately
+    setShowMenu(prevState => !prevState)
+
+    if (isImageElement(evt.target)) {
+      setIsImageMenu(true)
+    }
+    else {
+      setIsImageMenu(false)
+    }
+
     setXpos(evt.pageX)
     setYpos(evt.pageY)
     setTargetElement(evt.target)
 
-    
   }
 
   const handleClick = (evt: any) => {
@@ -62,7 +81,7 @@ const ContextMenu = () => {
    * @param evt 
    */
   const onGreyScale = (evt: any) => {
-    if (isImageElement(targetElement)) {
+    if (isImageElement) {
       let id = targetElement.id
 
       // string to num
@@ -109,17 +128,25 @@ const ContextMenu = () => {
       keepMounted
       open={showMenu}
       onClose={onClose}
+      transitionDuration={{exit: 0}}
       anchorReference="anchorPosition"
       anchorPosition={
         xpos !== null && ypos !== null
           ? { top: ypos, left: xpos }
           : undefined
       }
-    >
-      <MenuItem onClick={onGreyScale}>GreyScale</MenuItem>
-      <MenuItem onClick={onValueAnalyzer}>ValueAnalyzer</MenuItem>
-      <MenuItem onClick={onReset}>ResetSize</MenuItem>
-      <MenuItem onClick={onDelete}>Delete</MenuItem>
+    > 
+      {isImageMenu? 
+        [
+          <MenuItem onClick={onGreyScale} key={0}>GreyScale</MenuItem>,
+          <MenuItem onClick={onValueAnalyzer} key={1}>ValueAnalyzer</MenuItem>,
+          <MenuItem onClick={onReset} key={2}>ResetSize</MenuItem>,
+          <MenuItem onClick={onDelete} key={3}>Delete</MenuItem>
+        ]
+        :
+        <MenuItem>To be implement</MenuItem>
+      }
+      
     </Menu>
   )
 }

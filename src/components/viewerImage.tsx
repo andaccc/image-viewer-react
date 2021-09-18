@@ -19,6 +19,8 @@ import { attachDrag } from '../utils/dragHandler'
 import { attachZoom } from '../utils/zoomHandler'
 import { ImageContext } from './imageContext'
 
+import './image.css'
+
 // image pixel limit
 const WIDTH_LIMIT = 500; 
 const HEIGHT_LIMIT = 500;
@@ -126,8 +128,23 @@ const ViewerImage = (params: any) => {
 		})
 	} 
 
+	const handleMousedown = (evt : any) => {
+		/**
+		 * try to set top zindex on clicked image
+		 */
+		var ele = document.getElementsByClassName('zTop');
+
+		// remove class from all other image
+		// probably a very dumb way
+		Array.from(ele).forEach( (element) => {
+			element.classList.remove('zTop')
+		})
+
+		evt.target.classList.add('zTop')
+	}
+
   return (
-		<div ref={divRef}>
+		<div ref={divRef} onMouseDown={handleMousedown}>
 		</div>
   )
 }

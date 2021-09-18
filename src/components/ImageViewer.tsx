@@ -120,7 +120,7 @@ const ImageViewer = () => {
   }
 
   useEffect(() => {
-    console.log(imageState)
+    //console.log(imageState)
 
   }, [imageState])
   
