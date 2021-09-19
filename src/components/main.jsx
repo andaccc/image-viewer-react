@@ -3,6 +3,7 @@ import React from "react";
 import Container from '@material-ui/core/Container';
 import ImageViewer from "./ImageViewer"
 import { ImageContextProvider } from './imageContext'
+import WaterMark from './waterMark'
 
 import Parent from './../test/Parent'
 
@@ -21,6 +22,7 @@ export default class Main extends React.Component {
         <ImageContextProvider>
           <ImageViewer />
         </ImageContextProvider>
+        <WaterMark/>
       </Container>
     )
   }
