@@ -26,8 +26,6 @@ const WIDTH_LIMIT = 500;
 const HEIGHT_LIMIT = 500;
 
 const ViewerImage = (params: any) => {
-	const imageParams = useContext(ImageContext)
-
 	const [rawData, setRawData] = useState(params.image.imageData)
 	const [imgIndex, setImgIndex] = useState(params.image.index)
 	const [isGreyFilter, setIsGreyFilter] = useState(params.image.isGreyScale)
@@ -86,9 +84,8 @@ const ViewerImage = (params: any) => {
 	}  
 
 	useEffect(() => {
-		// run once
 		onImageInit() 
-	}, [rawData]) // or on target state change
+	}, [rawData]) 
 
 	function onImageLoad() {
 		return new Promise((resolve, reject) => {

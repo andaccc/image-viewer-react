@@ -3,7 +3,7 @@ import { ImageActions } from "./imageReducer"
 
 export interface IViewerImage {
   imageData: string | ArrayBuffer,
-  index: number,
+  index: string, // TODO: rename it, using unique key id instead of index
   isGreyScale: boolean
 }
 

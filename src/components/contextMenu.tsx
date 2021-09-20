@@ -10,6 +10,7 @@ import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 
 import { ImageContext } from './imageContext'
+import { useImageReducer } from './imageReducer'
 
 const ContextMenu = () => {
   const {imageState, dispatch} = useContext(ImageContext)
@@ -21,6 +22,8 @@ const ContextMenu = () => {
 
   const [isImageMenu, setIsImageMenu] = useState(false)
 
+  const imageReducer = useImageReducer()
+
   useEffect(() => {
     // TODO: separate normal and image context menu
     document.addEventListener("contextmenu", handleContextMenu)
@@ -31,8 +34,8 @@ const ContextMenu = () => {
   }, [])
 
   useEffect(() => {
-   
-  }, [])
+    //console.log(imageState)
+  }, [imageState])
 
   const isImageElement = (ele: HTMLElement) => {
     return ele.tagName === 'IMG'
@@ -83,22 +86,13 @@ const ContextMenu = () => {
   const onGreyScale = (evt: any) => {
     if (isImageElement) {
       let id = targetElement.id
+      let i = imageState.images.findIndex(x => x.index === id)
 
-      // string to num
-      let i = imageState.images.findIndex(x => x.index.toString() === id)
-
-      // https://stackoverflow.com/questions/37662708/react-updating-state-when-state-is-an-array-of-objects
-      // find the image by id 
-      // and flip the grey scale flag
-      dispatch({ type: 'GREY_FILTER', payload: i})
+      imageReducer.greyFilter(i)
     }
 
     onClose()
   }
-
-  useEffect(() => {
-    //console.log(imageState)
-  }, [imageState])
 
   // trigger value analyzer
   // TODO
@@ -113,8 +107,14 @@ const ContextMenu = () => {
   }
 
   // on delete image
-  // TODO
-  const onDelete = () => {
+  const onDelete = (evt: any) => {
+    if (isImageElement) {
+      let id = targetElement.id
+      let i = imageState.images.findIndex(x => x.index === id)
+
+      imageReducer.deleteImage(i)
+    }
+
     onClose()
   }
 
@@ -140,7 +140,7 @@ const ContextMenu = () => {
         [
           <MenuItem onClick={onGreyScale} key={0}>GreyScale</MenuItem>,
           <MenuItem onClick={onValueAnalyzer} key={1}>ValueAnalyzer</MenuItem>,
-          <MenuItem onClick={onReset} key={2}>ResetSize</MenuItem>,
+          // <MenuItem onClick={onReset} key={2}>ResetSize</MenuItem>,
           <MenuItem onClick={onDelete} key={3}>Delete</MenuItem>
         ]
         :

@@ -3,6 +3,7 @@
  */
 
 import React, {useContext} from 'react'
+import { v4 as uuidv4 } from 'uuid';
 
 import {IViewerImageState, IViewerImageContext} from "./imageInterface";
 import { ImageContext } from './imageContext'
@@ -17,9 +18,24 @@ export const useImageReducer = () => {
     dispatch({ type: 'ADD', payload: imageData });
   }
 
-  return { addImage }
+  const deleteImage = (imageId: number) => {
+    dispatch({ type: 'DELETE', payload: imageId });
+  }
+
+  const greyFilter = (imageId: number) =>{
+    // https://stackoverflow.com/questions/37662708/react-updating-state-when-state-is-an-array-of-objects
+    // find the image by id 
+    // and flip the grey scale flag
+    dispatch({ type: 'GREY_FILTER', payload: imageId})
+  }
+
+  return { addImage, deleteImage, greyFilter}
 }
 
+const getUniquekey = () => {
+  let key = uuidv4()
+  return key
+}
 
 export const imageReducer = (imageState: IViewerImageState, action: ImageActions): IViewerImageState => {
   switch (action.type) {
@@ -27,7 +43,7 @@ export const imageReducer = (imageState: IViewerImageState, action: ImageActions
       let newContext = {
         images: [...imageState.images, {
           imageData: action.payload,
-          index: imageState.count,
+          index: getUniquekey(),
           isGreyScale: false
         }],
         count: imageState.count + 1
@@ -48,12 +64,32 @@ export const imageReducer = (imageState: IViewerImageState, action: ImageActions
             ),
           ...imageState.images.slice(id + 1)
         ],
-        count: imageState.count + 1
+        count: imageState.count
       }
       return newContext
     }
 
-    case "DELETE":
-      return {} as IViewerImageState
+    case "DELETE": {
+      /**
+       * BUG:
+       * when delete first image
+       * the last image get deleted instead
+       * but state refer correctly
+       * react component cached?
+       */
+
+      const id = action.payload
+      if (id === -1 || id === undefined) return imageState
+
+      let newContext = {
+        images: [
+          ...imageState.images.slice(0, id),
+          ...imageState.images.slice(id + 1)
+        ],
+        count: imageState.count - 1
+      }
+
+      return newContext
+    }
   }
 }

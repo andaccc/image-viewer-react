@@ -8,6 +8,7 @@ import ViewerImage from './viewerImage'
 import ContextMenu from './contextMenu'
 
 import { ImageContext } from './imageContext'
+import { useImageReducer } from './imageReducer'
 
 //https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
 //https://medium.com/@650egor/simple-drag-and-drop-file-upload-in-react-2cb409d88929
@@ -19,6 +20,8 @@ const ImageViewer = () => {
   const viewRef = useRef<HTMLDivElement>(null)
   const analyzerRef = useRef<HTMLCanvasElement>(null)
   const histRef = useRef<HTMLCanvasElement>(null)
+
+  const imageReducer = useImageReducer()
 
   useEffect(() => {
     // need this for drop file to work
@@ -62,8 +65,8 @@ const ImageViewer = () => {
           // must use preState inside useEffect
           // TODO: try useReducer
 
-          dispatch({ type: 'ADD', payload: reader.result})
-
+          //dispatch({ type: 'ADD', payload: reader.result})
+          imageReducer.addImage(reader.result)
         }
       }
     })
@@ -120,7 +123,7 @@ const ImageViewer = () => {
   }
 
   useEffect(() => {
-    //console.log(imageState)
+    console.log(imageState)
 
   }, [imageState])
   
@@ -129,9 +132,9 @@ const ImageViewer = () => {
     <div ref={viewRef} style={viewStyle as React.CSSProperties} id="viewer_main">
       <p style={textStyle}>Drop image here</p>
       
-      {imageState.images.map((image, i) => {
+      {imageState.images.map((image) => {
         return (
-          <ViewerImage parentRef={viewRef} image={image} key={i} />
+          <ViewerImage parentRef={viewRef} image={image} key={image.index} />
         )})
       }
 
