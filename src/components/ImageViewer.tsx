@@ -131,7 +131,7 @@ const ImageViewer = () => {
   return (
     <div ref={viewRef} style={viewStyle as React.CSSProperties} id="viewer_main">
       <p style={textStyle}>Drop image here</p>
-      
+      <p style={{fontSize: '15px', color: '#7B7B7B'}}>Right click image for image option</p>
       {imageState.images.map((image) => {
         return (
           <ViewerImage parentRef={viewRef} image={image} key={image.index} />
