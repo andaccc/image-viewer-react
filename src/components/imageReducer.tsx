@@ -22,14 +22,18 @@ export const useImageReducer = () => {
     dispatch({ type: 'DELETE', payload: imageId });
   }
 
-  const greyFilter = (imageId: number) =>{
+  const greyFilter = (imageId: number) => {
     // https://stackoverflow.com/questions/37662708/react-updating-state-when-state-is-an-array-of-objects
     // find the image by id 
     // and flip the grey scale flag
     dispatch({ type: 'GREY_FILTER', payload: imageId})
   }
 
-  return { addImage, deleteImage, greyFilter}
+  const ValueAnalyzer = (imageId: number) => {
+    dispatch({ type: 'VALUE_ANALYZER', payload: imageId})
+  }
+
+  return { addImage, deleteImage, greyFilter, ValueAnalyzer}
 }
 
 const getUniquekey = () => {
@@ -44,7 +48,8 @@ export const imageReducer = (imageState: IViewerImageState, action: ImageActions
         images: [...imageState.images, {
           imageData: action.payload,
           index: getUniquekey(),
-          isGreyScale: false
+          isGreyScale: false,
+          isAnalyzer: false
         }],
         count: imageState.count + 1
       }
@@ -61,6 +66,23 @@ export const imageReducer = (imageState: IViewerImageState, action: ImageActions
           ...imageState.images.slice(0, id),
           Object.assign({}, imageState.images[id], 
             {isGreyScale: !imageState.images[id].isGreyScale}
+            ),
+          ...imageState.images.slice(id + 1)
+        ],
+        count: imageState.count
+      }
+      return newContext
+    }
+
+    case "VALUE_ANALYZER": {
+      const id = action.payload
+
+      if (id === -1 || id === undefined) return imageState
+      let newContext = {
+        images: [
+          ...imageState.images.slice(0, id),
+          Object.assign({}, imageState.images[id], 
+            {isAnalyzer: !imageState.images[id].isAnalyzer}
             ),
           ...imageState.images.slice(id + 1)
         ],

@@ -9,6 +9,9 @@ import React, {useState, useEffect, useContext} from "react"
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+
 import { ImageContext } from './imageContext'
 import { useImageReducer } from './imageReducer'
 
@@ -16,6 +19,7 @@ const ContextMenu = () => {
   const {imageState, dispatch} = useContext(ImageContext)
 
   const [showMenu, setShowMenu] = useState(false)
+  const [showDialog, setShowDialog] = useState(false)
   const [xpos, setXpos] = useState(0)
   const [ypos, setYpos] = useState(0)
   const [targetElement, setTargetElement] = useState({} as HTMLElement)
@@ -95,8 +99,13 @@ const ContextMenu = () => {
   }
 
   // trigger value analyzer
-  // TODO
   const onValueAnalyzer = () => {
+    if (isImageElement) {
+      let id = targetElement.id
+      let i = imageState.images.findIndex(x => x.index === id)
+
+      imageReducer.ValueAnalyzer(i)
+    }    
     onClose()
   }
 
@@ -122,33 +131,80 @@ const ContextMenu = () => {
     setShowMenu(false)
   }
 
+  const onDialogClose = () => {
+    setShowMenu(false)
+    setShowDialog(false)
+  }
+
+  const onAbout = () =>{
+    setShowMenu(false)
+    setShowDialog(true)
+  }
+
   return (
-    <Menu
-      id="img-context-menu"
-      keepMounted
-      open={showMenu}
-      onClose={onClose}
-      transitionDuration={{exit: 0}}
-      anchorReference="anchorPosition"
-      anchorPosition={
-        xpos !== null && ypos !== null
-          ? { top: ypos, left: xpos }
-          : undefined
-      }
-    > 
-      {isImageMenu? 
-        [
-          <MenuItem onClick={onGreyScale} key={0}>GreyScale</MenuItem>,
-          <MenuItem onClick={onValueAnalyzer} key={1}>ValueAnalyzer</MenuItem>,
-          // <MenuItem onClick={onReset} key={2}>ResetSize</MenuItem>,
-          <MenuItem onClick={onDelete} key={3}>Delete</MenuItem>
-        ]
-        :
-        <MenuItem>To be implement</MenuItem>
-      }
-      
-    </Menu>
+    <React.Fragment>
+      <Menu
+        id="img-context-menu"
+        keepMounted
+        open={showMenu}
+        onClose={onClose}
+        transitionDuration={{exit: 0}}
+        anchorReference="anchorPosition"
+        anchorPosition={
+          xpos !== null && ypos !== null
+            ? { top: ypos, left: xpos }
+            : undefined
+        }
+      > 
+        {isImageMenu? 
+          [
+            <MenuItem onClick={onGreyScale} key={0}>GreyScale</MenuItem>,
+            <MenuItem onClick={onValueAnalyzer} key={1}>ValueAnalyzer</MenuItem>,
+            // <MenuItem onClick={onReset} key={2}>ResetSize</MenuItem>,
+            <MenuItem onClick={onDelete} key={3}>Delete</MenuItem>
+          ]
+          :
+          <MenuItem onClick={onAbout}>About</MenuItem>
+        }
+        
+      </Menu>
+      <SimpleDialog
+        open={showDialog}
+        onClose={onDialogClose}
+      />
+    </React.Fragment>
   )
 }
 
-export default ContextMenu
+
+const SimpleDialog = (props: any) => {
+  const { open, onClose } = props;
+
+  const handleClose = () => {
+    onClose();
+  };
+
+  const dialogStyle = {
+    margin: '15px'
+    /*
+    marginTop: 0,
+    display: 'flex',
+    height: '100vh',  
+    flexDirection: 'column',
+    alignItems: 'center',
+    */
+  }
+
+  return (
+    <Dialog onClose={handleClose} open={open}>
+      <DialogTitle>About</DialogTitle>
+      <div style={dialogStyle as React.CSSProperties}>
+        <p>Image Viewer React by github.com/andaccc</p>
+        <p>Drag drop image to canvas</p>
+        <p>Right click image for image options</p>
+      </div>
+    </Dialog>
+  );
+}
+
+export {ContextMenu, SimpleDialog}

@@ -29,6 +29,7 @@ const ViewerImage = (params: any) => {
 	const [rawData, setRawData] = useState(params.image.imageData)
 	const [imgIndex, setImgIndex] = useState(params.image.index)
 	const [isGreyFilter, setIsGreyFilter] = useState(params.image.isGreyScale)
+	const [isAnalyzer, setIsAnalyzer] = useState(params.image.isAnalyzer)
 	const [imgData, setImgData] = useState<ImageData>()
 	const [imgEle, setImgEle] = useState<HTMLImageElement>()
 
@@ -82,6 +83,24 @@ const ViewerImage = (params: any) => {
 			}
 		}
 	}  
+
+	useEffect(() => {
+		toggleAnalyzer()
+	}, [isAnalyzer]) 
+
+	const toggleAnalyzer = () => {
+		// TODO:
+		// draw value histogram
+		// put it on top right fixed first?
+		// simplify value
+
+
+
+
+
+
+
+	}
 
 	useEffect(() => {
 		onImageInit() 

@@ -5,8 +5,8 @@ import './../style.css';
 import { grayScaleFilter } from '../utils/imageFilter'
 
 import ViewerImage from './viewerImage'
-import ContextMenu from './contextMenu'
 
+import { ContextMenu } from './contextMenu'
 import { ImageContext } from './imageContext'
 import { useImageReducer } from './imageReducer'
 
