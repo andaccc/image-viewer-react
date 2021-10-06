@@ -72,43 +72,6 @@ const ImageViewer = () => {
     })
   }
 
-  /**
-   * Trigger the value analyzer  
-   *  1. Histogram
-   *  2. Simplify value image
-   * @param {*} imgId target image id
-   */
-  const triggerValueAnalyzer = (imgId : string) => {
-    var img = document.getElementById(imgId)
-    if (img == null) return
-
-    var tmp = img.cloneNode(true) as HTMLImageElement
-    
-    // how to convert to rgba?
-    var ctx = analyzerRef.current!.getContext('2d'); 
-    if (ctx == null) return
-
-    // TODO: resize canvas
-    // - fixed size css?
-    // but how to handle different ratio
-    ctx.canvas.width  = tmp.width;
-    ctx.canvas.height = tmp.height;
-
-    ctx.drawImage(tmp, 0, 0);
-
-    var imgData = ctx.getImageData(0, 0, tmp.width, tmp.height).data;
-
-    var grayData = grayScaleFilter(imgData)
-    
-    // TODO: draw hist
-    // https://www.d3-graph-gallery.com/graph/histogram_basic.html
-    var hist = [] 
-    grayData.forEach( (data) => {
-      let val = Math.floor(data / 255)
-      hist.push(val)
-    })
-  }
-
   const viewStyle = {
     marginTop: 0,
     display: 'flex',

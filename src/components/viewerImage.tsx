@@ -18,8 +18,16 @@ import { grayScaleFilter } from '../utils/imageFilter'
 import { attachDrag } from '../utils/dragHandler'
 import { attachZoom } from '../utils/zoomHandler'
 import { ImageContext } from './imageContext'
+import { getHist } from '../utils/hist'
+
+//import * as d3 from "d3";
+import { Chart, ChartType, ChartConfiguration, registerables } from 'chart.js'
 
 import './image.css'
+import { gray } from "d3-color";
+
+Chart.register(...registerables)
+
 
 // image pixel limit
 const WIDTH_LIMIT = 500; 
@@ -35,6 +43,8 @@ const ViewerImage = (params: any) => {
 
 	const parents = useRef<HTMLDivElement>(params.parentRef)
 	const divRef = useRef<HTMLDivElement>(null)
+	const analyzerRef = useRef<HTMLDivElement>(null)
+	const canvasRef = useRef<HTMLCanvasElement>(null)
 
 	const onImageInit = async () => {
 		//https://stackoverflow.com/questions/46399223/async-await-in-image-loading
@@ -44,7 +54,8 @@ const ViewerImage = (params: any) => {
 	// need to manualy update it...
 	useEffect(() => {
 		setIsGreyFilter(params.image.isGreyScale)
-	}, [params.image.isGreyScale])
+		setIsAnalyzer(params.image.isAnalyzer)
+	}, [params.image.isGreyScale, params.image.isAnalyzer])
 
 	useEffect(() => {
 		applyGreyScaleFilter()
@@ -85,26 +96,12 @@ const ViewerImage = (params: any) => {
 	}  
 
 	useEffect(() => {
-		toggleAnalyzer()
-	}, [isAnalyzer]) 
-
-	const toggleAnalyzer = () => {
-		// TODO:
-		// draw value histogram
-		// put it on top right fixed first?
-		// simplify value
-
-
-
-
-
-
-
-	}
-
-	useEffect(() => {
 		onImageInit() 
 	}, [rawData]) 
+
+	useEffect(() => {
+		if (imgData && imgEle) initAnalyzer()
+	}, [imgData, imgEle]) 
 
 	function onImageLoad() {
 		return new Promise((resolve, reject) => {
@@ -144,6 +141,92 @@ const ViewerImage = (params: any) => {
 		})
 	} 
 
+	const initAnalyzer = () => {
+		/**
+		 * TODO:
+		 *	- draw value chart
+		 *  - put it on top right fixed first?
+		 *  - simplify value 
+		 *  - how to handle multiple images?
+		 * 		- position next to image?
+		 */
+
+		// d3: https://www.d3-graph-gallery.com/graph/density_basic.html
+		// chartJs: https://www.chartjs.org/docs/latest/samples/line/line.html
+
+		/**
+		 * image hist:
+		 * https://codepen.io/aNNiMON/pen/OqjGVP
+		 * https://www.codedrome.com/image-histograms-in-javascript/	
+		 * http://bl.ocks.org/jinroh/4666920
+		 * https://phg1024.github.io/image/processing/2014/02/26/ImageProcJS4.html
+		 */
+
+		var ctx = canvasRef.current
+
+		var valueData = [] as number[]
+
+    var grayData = grayScaleFilter(imgData.data)
+    
+		valueData = getHist(grayData, 0, 0, imgEle.naturalWidth, imgEle.naturalHeight)
+
+		var xVal = [] as number[]
+		var count = 0
+		for (let i=0; i < valueData.length; i++) {
+			xVal[i] = count++
+		}
+		const data = {
+			labels: xVal,
+			datasets: [{
+				label: 'value',
+				data: valueData, // y value
+				fill: true,
+				borderColor: 'rgb(75, 192, 192)',
+				tension: 0.1,
+				pointRadius: 0,
+				borderWidth: 1
+			}]
+		}
+
+		var chart : Chart = new Chart(ctx, {
+			type: 'line' as ChartType, 
+			data: data,
+			options: {
+				scales: {
+					y: {
+						beginAtZero: true,
+						ticks: {
+							display: false
+						}
+					}
+				},
+				plugins: {
+					legend: {
+						display: false
+					},
+					tooltip: {
+						enabled: false
+					}	
+				}
+			}
+		});
+
+	}
+
+	useEffect(() => {
+		toggleAnalyzer()
+	}, [isAnalyzer]) 
+
+	const toggleAnalyzer = () => {
+		// toggle visibility
+		if (isAnalyzer) {
+			analyzerRef.current.classList.remove("no-visible")
+		}
+		else {
+			analyzerRef.current.classList.add("no-visible")
+		}
+	}
+
 	const handleMousedown = (evt : any) => {
 		/**
 		 * try to set top zindex on clicked image
@@ -159,8 +242,23 @@ const ViewerImage = (params: any) => {
 		evt.target.classList.add('zTop')
 	}
 
+	// tmp: fix on top right
+	const chartStyle = {
+		position: 'fixed',
+		top: '50px',
+		right: '50px',
+		width: '400px',
+		height: '400px',
+		'z-index': '1000'
+	}
+
   return (
 		<div ref={divRef} onMouseDown={handleMousedown}>
+			<div ref={analyzerRef} 
+						className="no-visible" 
+						style={chartStyle as React.CSSProperties}>
+				<canvas ref={canvasRef}></canvas>
+			</div>
 		</div>
   )
 }

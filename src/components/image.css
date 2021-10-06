@@ -1,3 +1,7 @@
 .zTop {
   z-index: 999;
 }
+
+.no-visible {
+  display: none;
+}
