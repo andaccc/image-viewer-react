@@ -33,13 +33,39 @@ const ImageViewer = () => {
 
     // attach drag drop
     viewRef.current!.addEventListener('drop', onDrop)
+    window.addEventListener('paste', onPaste)
 
     return () => {
-      viewRef.current!?.removeEventListener('drop', onDrop);
+      viewRef.current!?.removeEventListener('drop', onDrop)
+      window.removeEventListener('paste', onPaste)
     };
 
   }, []) // run only once
-  
+
+  // https://ourcodeworld.com/articles/read/491/how-to-retrieve-images-from-the-clipboard-with-javascript-in-the-browser
+  const onPaste = (evt: any) => {
+    //var data = evt.clipboardData.getData('Image')
+
+    if(!evt.clipboardData) return
+
+    var items = evt.clipboardData.items;
+    if(!items) return
+
+    for (var i = 0; i < items.length; i++) {
+        // Skip content if not image
+        if (items[i].type.indexOf("image") === -1) continue;
+        // Retrieve image on clipboard as blob
+        var blob = items[i].getAsFile();
+
+        let reader = new FileReader()
+        reader.readAsDataURL(blob)
+        reader.onloadend = () => {
+          loadImage(reader.result as string)
+        }
+    }
+
+  }
+
   const onDrop = (evt: any) => {
     evt.preventDefault() 
     handleDropImage(evt)
@@ -66,10 +92,14 @@ const ImageViewer = () => {
           // TODO: try useReducer
 
           //dispatch({ type: 'ADD', payload: reader.result})
-          imageReducer.addImage(reader.result)
+          loadImage(reader.result as string)
         }
       }
     })
+  }
+
+  const loadImage = (imageStr : string) => {
+    imageReducer.addImage(imageStr)
   }
 
   const viewStyle = {
@@ -93,7 +123,7 @@ const ImageViewer = () => {
 
   return (
     <div ref={viewRef} style={viewStyle as React.CSSProperties} id="viewer_main">
-      <p style={textStyle}>Drop image here</p>
+      <p style={textStyle}>Drop / Ctrl+V paste image here</p>
       <p style={{fontSize: '15px', color: '#7B7B7B'}}>Right click image for image option</p>
       {imageState.images.map((image) => {
         return (

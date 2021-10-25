@@ -9,8 +9,13 @@ import React, {useState, useEffect, useContext} from "react"
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 
+
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
+import Divider from '@material-ui/core/Divider';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText'
 
 import { ImageContext } from './imageContext'
 import { useImageReducer } from './imageReducer'
@@ -22,7 +27,7 @@ const ContextMenu = () => {
   const [showDialog, setShowDialog] = useState(false)
   const [xpos, setXpos] = useState(0)
   const [ypos, setYpos] = useState(0)
-  const [targetElement, setTargetElement] = useState({} as HTMLElement)
+  const [targetElement, setTargetElement] = useState({} as HTMLImageElement)
 
   const [isImageMenu, setIsImageMenu] = useState(false)
 
@@ -35,6 +40,8 @@ const ContextMenu = () => {
     return () => {
       document.removeEventListener("contextmenu", handleContextMenu)
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -141,6 +148,17 @@ const ContextMenu = () => {
     setShowDialog(true)
   }
 
+
+  /**
+   * no direct way to trigger copy/paste as web security problem from chrome...
+   * https://stackoverflow.com/questions/48178302/implementing-paste-in-custom-context-menu/48342112
+   */
+  const onPaste = () => {
+  }
+
+  const imageHeightStr = `Height: ${targetElement.naturalHeight}`
+  const imageWidthStr = `Width: ${targetElement.naturalWidth}`
+  
   return (
     <React.Fragment>
       <Menu
@@ -161,10 +179,16 @@ const ContextMenu = () => {
             <MenuItem onClick={onGreyScale} key={0}>GreyScale</MenuItem>,
             <MenuItem onClick={onValueAnalyzer} key={1}>ValueAnalyzer</MenuItem>,
             // <MenuItem onClick={onReset} key={2}>ResetSize</MenuItem>,
-            <MenuItem onClick={onDelete} key={3}>Delete</MenuItem>
+            <MenuItem onClick={onDelete} key={3}>Delete</MenuItem>,
+            <Divider />,
+            <ListItem><ListItemText primary={imageHeightStr} /></ListItem>,
+            <ListItem><ListItemText primary={imageWidthStr} /></ListItem>
           ]
           :
-          <MenuItem onClick={onAbout}>About</MenuItem>
+          [
+            //<MenuItem onClick={onPaste}>Paste Image</MenuItem>,
+            <MenuItem onClick={onAbout}>About</MenuItem>
+          ]
         }
         
       </Menu>
@@ -186,13 +210,6 @@ const SimpleDialog = (props: any) => {
 
   const dialogStyle = {
     margin: '15px'
-    /*
-    marginTop: 0,
-    display: 'flex',
-    height: '100vh',  
-    flexDirection: 'column',
-    alignItems: 'center',
-    */
   }
 
   return (

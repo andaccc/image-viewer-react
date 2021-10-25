@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import {IViewerImageState, IViewerImageContext} from "./imageInterface";
 import { ImageContext } from './imageContext'
+import { forEachTrailingCommentRange } from 'typescript';
 
 export type ImageActions = any
 
@@ -78,6 +79,20 @@ export const imageReducer = (imageState: IViewerImageState, action: ImageActions
       const id = action.payload
 
       if (id === -1 || id === undefined) return imageState
+      let newImages = imageState.images
+      newImages.forEach( (image, idx) => {
+        if (idx === id) {
+          image.isAnalyzer = true
+        }
+        else {
+          image.isAnalyzer = false
+        }
+      });
+
+      let newContext = {
+        images: newImages,
+        count: imageState.count
+      /*
       let newContext = {
         images: [
           ...imageState.images.slice(0, id),
@@ -87,6 +102,7 @@ export const imageReducer = (imageState: IViewerImageState, action: ImageActions
           ...imageState.images.slice(id + 1)
         ],
         count: imageState.count
+        */
       }
       return newContext
     }
