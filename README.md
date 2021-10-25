@@ -4,10 +4,11 @@ Hosting on aws: https://master.d2o67qcn52znqy.amplifyapp.com
 
 pure front end app
 
-current support
-- drag drop single image
-- right click for context menu
-   - apply greyscale filter
+========================
+Port to chrome extension
+
+https://blog.logrocket.com/creating-chrome-extension-react-typescript/ 
+https://github.com/sblask/webextension-enhanced-image-viewer
 
 ========================
 
@@ -21,23 +22,13 @@ https://phg1024.github.io/image/processing/2014/02/26/ImageProcJS4.html
 
 === TODO ===
 - value analyzer
-  - histogram
   - simplify value
 
 middlewheel -> resize all image
 - resize all ?
 - resize single image when mouse hover on image?
 
-right click
--> grey scale
-
-grey scale strategy
-
 pan -> all image move
-
-watermark
-
-port to chrome extension?
 
 === Development Plan ===
 

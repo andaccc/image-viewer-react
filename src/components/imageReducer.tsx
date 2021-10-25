@@ -82,7 +82,7 @@ export const imageReducer = (imageState: IViewerImageState, action: ImageActions
       let newImages = imageState.images
       newImages.forEach( (image, idx) => {
         if (idx === id) {
-          image.isAnalyzer = true
+          image.isAnalyzer = !image.isAnalyzer
         }
         else {
           image.isAnalyzer = false
