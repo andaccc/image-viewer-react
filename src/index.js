@@ -15,18 +15,3 @@ ReactDOM.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
-
-/*
-openImage = function(image){
-  chrome.tabs.create({'url': chrome.extension.getURL('index.html')}, function(tab) {
-    // Tab opened.
-  });
-
-};
-
-chrome.contextMenus.create({
-title: "Open image in image viewer",
-contexts:["image"],  
-onclick: openImage 
-});
-*/

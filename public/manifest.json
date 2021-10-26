@@ -6,7 +6,7 @@
   "author": "https://github.com/andaccc/",
   "homepage_url": "https://github.com/andaccc/image-viewer-react",
   "background": {
-    "scripts": "chromeExt/main.js"
+    "scripts": "chromeExt/background.js"
   },
   "options_ui": {
     "page": "chromeExt/options.html"
