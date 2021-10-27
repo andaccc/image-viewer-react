@@ -6,7 +6,7 @@ const WaterMark = () => {
     right: '10vh',
     bottom: '1vh',
     color: '#7B7B7B'
-  } as React.CSSProperties;
+  } as React.CSSProperties
   
   return (
     <p style={textStyle}>github.com/andaccc</p>

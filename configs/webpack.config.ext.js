@@ -2,17 +2,25 @@
 // https://www.tracylum.com/blog/2017-11-05-turn-a-simple-react-app-into-a-chrome-extension/
 
 const path = require('path');
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
-  entry: './src/index.js',
+  resolve: {
+    extensions: ['.js', '.ts', '.jsx', '.tsx']
+  },  
+  entry: path.join(__dirname, './../src/index.js'),
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, './../dist')
   },
   module: {
     rules: [
+      { 
+        test: /\.tsx?$/, 
+        loader: "ts-loader" 
+      },
       {
-        test: /\.[jt]sx?$/,
+        test: /\.[j]sx?$/,
         exclude: /node_modules/,
         use: [
           {
@@ -22,7 +30,7 @@ module.exports = {
       },
       {
         test: /\.css$/i,
-        use: ["style-loader", "css-loader"],
+        use: ["css-loader"],
       },
       // WOFF Font
       {
@@ -90,5 +98,12 @@ module.exports = {
         use: 'url-loader',
       }
     ],
-  }
+  },
+  plugins: [
+    new CopyPlugin({
+      patterns: [
+        { from: "./src/chromeExt", to: "./chromeExt" },
+      ],
+    }),
+  ],
 }

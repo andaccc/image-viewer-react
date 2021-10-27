@@ -24,7 +24,6 @@ function tabMonitor(details) {
 
 
 function openImageViewer(tabId) {
-  // how to run html?
   chrome.tabs.executeScript(
     tabId,
     {

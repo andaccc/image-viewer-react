@@ -4,7 +4,6 @@
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
-    "outFile": "../../built/local/tsc.js",
     "sourceMap": true,
     "target": "es5",
     "lib": [
@@ -22,13 +21,14 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    //"noEmit": true,
     "jsx": "react-jsx",
     "strictNullChecks": false
   },
   "include": [
-    "./src/**/*"
-  ],
+    "src/**/*.ts", 
+    "src/**/*.tsx"
+],
   "exclude": [
     "node_modules",
     "**/*.spec.ts"

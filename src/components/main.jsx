@@ -5,7 +5,7 @@ import ImageViewer from "./ImageViewer"
 import { ImageContextProvider } from './imageContext'
 import WaterMark from './waterMark'
 
-import Parent from './../test/Parent'
+//import Parent from './../test/Parent'
 
 // main container
 export default class Main extends React.Component {
