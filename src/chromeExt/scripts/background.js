@@ -13,18 +13,28 @@
 
 chrome.webNavigation.onCommitted.addListener(tabMonitor);
 
+
 function tabMonitor(details) {
-  const IMAGE_REGEX = /\.(jpg|jpeg|png)(?:\?|$)/
+  chrome.storage.local.get('enabled', data => {
+    let enabled = data.enabled;
 
-  if ( details.url.match(IMAGE_REGEX) ) {
-    openImageViewer(details.tabId)
+    if (!enabled) return
 
-  }
+    const IMAGE_REGEX = /\.(jpg|jpeg|png)(?:\?|$)/
+    
+    const TWITTER_IMAGE_REGEX = /(?:pbs.twimg.com)/
+
+    if ( details.url.match(IMAGE_REGEX) ) {
+      openImageViewer(details.tabId)
+  
+    }
+
+  });
+  
 }
 
 
 function openImageViewer(tabId) {
-  console.log(tabId)
   // https://developer.mozilla.org/ja/docs/Mozilla/Add-ons/WebExtensions/API/tabs
   /**
    * TODO:
@@ -36,14 +46,14 @@ function openImageViewer(tabId) {
    */
 
 
-  /* 
-  chrome.tabs.executeScript(
+  // how to parse image?
+  // tabs.executeScript() load image ?
+  // https://developer.chrome.com/docs/extensions/reference/runtime/
+  // message communication from content.js -> react app
+  // image store in storage?
+  chrome.tabs.update(
     tabId,
     {
-      file: "bundle.js",
-      runAt: "document_start",
-    }
-  )*/
-  //chrome.tabs.create({url: 'index.html'}) 
-  //chrome.tabs.update(tabId, {url: 'index.html'}) 
+      url: 'index.html'
+    }) 
 }
