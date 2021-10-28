@@ -21,14 +21,13 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    //"noEmit": true,
     "jsx": "react-jsx",
     "strictNullChecks": false
   },
   "include": [
-    "src/**/*.ts", 
+    "src/**/*.ts",
     "src/**/*.tsx"
-],
+  ],
   "exclude": [
     "node_modules",
     "**/*.spec.ts"

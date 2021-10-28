@@ -24,12 +24,26 @@ function tabMonitor(details) {
 
 
 function openImageViewer(tabId) {
-  // how to run html?
+  console.log(tabId)
+  // https://developer.mozilla.org/ja/docs/Mozilla/Add-ons/WebExtensions/API/tabs
+  /**
+   * TODO:
+   * how to override tab
+   * and run image viewer + load image to viewer?...
+   * 
+   * override and inject html content to tab?
+   * 
+   */
+
+
+  /* 
   chrome.tabs.executeScript(
     tabId,
     {
-      file: "index.html",
+      file: "bundle.js",
       runAt: "document_start",
     }
-  )
+  )*/
+  //chrome.tabs.create({url: 'index.html'}) 
+  //chrome.tabs.update(tabId, {url: 'index.html'}) 
 }

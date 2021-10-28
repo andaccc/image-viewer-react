@@ -13,6 +13,9 @@ module.exports = {
     filename: 'bundle.js',
     path: path.resolve(__dirname, './../dist')
   },
+  optimization: {
+    minimize: false
+  },
   module: {
     rules: [
       { 
@@ -102,7 +105,7 @@ module.exports = {
   plugins: [
     new CopyPlugin({
       patterns: [
-        { from: "./src/chromeExt", to: "./chromeExt" },
+        { from: "./src/chromeExt", to: "./" },
       ],
     }),
   ],
