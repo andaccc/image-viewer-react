@@ -22,7 +22,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "noEmit": true
   },
   "include": [
     "src/**/*.ts",
