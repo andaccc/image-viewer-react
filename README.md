@@ -8,6 +8,7 @@ pure front end app
 Port to chrome extension
 
 https://blog.logrocket.com/creating-chrome-extension-react-typescript/ 
+
 https://github.com/sblask/webextension-enhanced-image-viewer
 
 ========================
