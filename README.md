@@ -4,6 +4,8 @@ Hosting on aws: https://master.d2o67qcn52znqy.amplifyapp.com
 
 pure front end app
 
+![Intro](public/intro.png)
+
 Control:
 
 Drop / Ctrl+V paste image to lord image
