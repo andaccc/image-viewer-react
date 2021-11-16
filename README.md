@@ -4,6 +4,16 @@ Hosting on aws: https://master.d2o67qcn52znqy.amplifyapp.com
 
 pure front end app
 
+Control:
+
+Drop / Ctrl+V paste image to lord image
+
+Mouse scroll image to zoom in/out
+
+Right click image for image options
+
+Drag image to move image
+
 ========================
 Port to chrome extension
 
