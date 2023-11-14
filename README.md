@@ -1,12 +1,15 @@
 # image-viewer-react
 
+- image zoom in/out 
+- analyze image's value 
+
 Hosting on aws: https://master.d2o67qcn52znqy.amplifyapp.com 
 
 pure front end app
 
 ![Intro](public/intro.png)
 
-Control:
+### Control:
 
 Drop / Ctrl+V paste image to lord image
 
@@ -16,22 +19,13 @@ Right click image for image options
 
 Drag image to move image
 
----
-Port to chrome extension
-
-https://blog.logrocket.com/creating-chrome-extension-react-typescript/ 
-
-https://github.com/sblask/webextension-enhanced-image-viewer
 
 ---
 
 Original from https://github.com/andaccc/image-viewer-electron
 
-now try to port as a pure web version 
+now port as a pure web version 
 
-Grey Scale/ histogram logic referenced from :
-
-https://phg1024.github.io/image/processing/2014/02/26/ImageProcJS4.html
 
 ## TODO 
 - value analyzer
@@ -63,3 +57,15 @@ pan -> all image move
 - top menu bar
 - save/load page
 - tag page?
+
+
+### Grey Scale/ histogram logic referenced from :
+
+https://phg1024.github.io/image/processing/2014/02/26/ImageProcJS4.html
+
+
+### How to port to chrome extension
+
+https://blog.logrocket.com/creating-chrome-extension-react-typescript/ 
+
+https://github.com/sblask/webextension-enhanced-image-viewer
