@@ -16,14 +16,14 @@ Right click image for image options
 
 Drag image to move image
 
-========================
+---
 Port to chrome extension
 
 https://blog.logrocket.com/creating-chrome-extension-react-typescript/ 
 
 https://github.com/sblask/webextension-enhanced-image-viewer
 
-========================
+---
 
 Original from https://github.com/andaccc/image-viewer-electron
 
@@ -33,7 +33,7 @@ Grey Scale/ histogram logic referenced from :
 
 https://phg1024.github.io/image/processing/2014/02/26/ImageProcJS4.html
 
-=== TODO ===
+## TODO 
 - value analyzer
   - simplify value
 
@@ -43,9 +43,9 @@ middlewheel -> resize all image
 
 pan -> all image move
 
-=== Development Plan ===
+## Development Plan 
 
-# First phase
+### First phase
 - react structure
   - image drag-drop
 - Image canvas
@@ -54,7 +54,7 @@ pan -> all image move
   - auto-alignment?
 - context-menu
   - value analyzer
-# Later Stage
+### Later Stage
 - simple image edit
 - UI design
 - leftside file explorer
